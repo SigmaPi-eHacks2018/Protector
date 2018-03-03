@@ -24,30 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core.world.entity;
+package org.sigmapi.protector.core.font;
 
-import org.sigmapi.protector.core.interfaces.Inputable;
-import org.sigmapi.protector.core.interfaces.Renderable;
-import org.sigmapi.protector.core.interfaces.Updateable;
-import org.sigmapi.protector.core.world.World;
+import org.sigmapi.protector.core.Statics;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 
 /**
- * Created by Kyle Fricilone on Mar 02, 2018.
+ * Created by Kyle Fricilone on Mar 03, 2018.
  */
-@AllArgsConstructor
-public abstract class AbstractEntity implements Inputable, Updateable, Renderable
+public enum Font
 {
 
-	protected final World world;
+	DEBUG("futura.otf", 26f),
+	LOAD("futura.otf", 15f),
+	MENU("futura.otf", 15f),
+	GAME("futura.otf", 15f),
+	PAUSE("futura.otf", 15f),
+	OVER("futura.otf", 15f),;
 
-	protected float length;
+	@Getter
+	private final String path;
 
-	protected float x;
-	protected float y;
+	@Getter
+	private final float ratio;
 
-	protected float xVel;
-	protected float yVel;
-
+	Font(String font, float ratio)
+	{
+		this.path = Statics.FONTS + font;
+		this.ratio = ratio;
+	}
 }

@@ -24,30 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core.world.entity;
+package org.sigmapi.protector.core;
 
-import org.sigmapi.protector.core.interfaces.Inputable;
-import org.sigmapi.protector.core.interfaces.Renderable;
-import org.sigmapi.protector.core.interfaces.Updateable;
-import org.sigmapi.protector.core.world.World;
-
-import lombok.AllArgsConstructor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by Kyle Fricilone on Mar 02, 2018.
+ * Created by Kyle Fricilone on Mar 03, 2018.
  */
-@AllArgsConstructor
-public abstract class AbstractEntity implements Inputable, Updateable, Renderable
+public class Level
 {
 
-	protected final World world;
+	private final AtomicInteger power;
+	private final AtomicInteger speed;
 
-	protected float length;
+	public Level()
+	{
+		this.power = new AtomicInteger(0);
+		this.speed = new AtomicInteger(Float.floatToIntBits(45.0f));
+	}
 
-	protected float x;
-	protected float y;
+	public int getPower()
+	{
+		return power.get();
+	}
 
-	protected float xVel;
-	protected float yVel;
+	public float getSpeed()
+	{
+		return Float.intBitsToFloat(speed.get());
+	}
+
+	public void setPower(int power)
+	{
+		this.power.set(power);
+	}
+
+	public void setSpeed(float speed)
+	{
+		this.speed.set(Float.floatToIntBits(speed));
+	}
 
 }

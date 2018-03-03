@@ -24,41 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core.world.entity.impl;
+package org.sigmapi.protector.core;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import org.sigmapi.protector.core.input.InputEvent;
-import org.sigmapi.protector.core.world.World;
-import org.sigmapi.protector.core.world.entity.AbstractEntity;
-
-import java.util.Deque;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Kyle Fricilone on Mar 03, 2018.
  */
-public class Shooter extends AbstractEntity
+public class State
 {
-	public Shooter(World world)
+
+	private final AtomicBoolean loaded;
+	private final AtomicBoolean paused;
+
+	public State()
 	{
-		super(world);
+		this.loaded = new AtomicBoolean(false);
+		this.paused = new AtomicBoolean(false);
 	}
 
-	@Override
-	public void update(float delta)
+	public boolean isLoaded()
 	{
-
+		return loaded.get();
 	}
 
-	@Override
-	public void render(SpriteBatch batch)
+	public boolean isPaused()
 	{
-
+		return paused.get();
 	}
 
-	@Override
-	public void accept(Deque<InputEvent> events)
+	public void setLoaded(boolean loaded)
 	{
-
+		this.loaded.set(loaded);
 	}
+
+	public void setPaused(boolean paused)
+	{
+		this.paused.set(paused);
+	}
+
 }

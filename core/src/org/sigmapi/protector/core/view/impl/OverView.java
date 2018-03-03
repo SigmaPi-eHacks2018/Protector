@@ -26,20 +26,10 @@
 
 package org.sigmapi.protector.core.view.impl;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 
 import org.sigmapi.protector.core.Protector;
-import org.sigmapi.protector.core.background.Background;
-import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
-import org.sigmapi.protector.core.skin.AsteroidSkin;
-import org.sigmapi.protector.core.skin.LaserSkin;
-import org.sigmapi.protector.core.skin.VesselSkin;
-import org.sigmapi.protector.core.Statics;
 import org.sigmapi.protector.core.view.AbstractView;
 
 import java.util.Deque;
@@ -47,43 +37,12 @@ import java.util.Deque;
 /**
  * Created by Kyle Fricilone on Mar 02, 2018.
  */
-public class LoadView extends AbstractView
+public class OverView extends AbstractView
 {
 
-	private final AssetManager assets;
-
-	public LoadView(Protector protector)
+	public OverView(Protector protector)
 	{
 		super(protector);
-		this.assets = protector.getAssets();
-
-		for (Background bg : Background.values())
-		{
-			assets.load(bg.getPath(), Texture.class);
-		}
-
-		for (AsteroidSkin skin : AsteroidSkin.values())
-		{
-			assets.load(skin.getPath(), Texture.class);
-		}
-
-		for (LaserSkin skin : LaserSkin.values())
-		{
-			assets.load(skin.getPath(), Texture.class);
-		}
-
-		for (VesselSkin skin : VesselSkin.values())
-		{
-			assets.load(skin.getPath(), Texture.class);
-		}
-
-		for (Font font : Font.values())
-		{
-			FreeTypeFontLoaderParameter param = new FreeTypeFontLoaderParameter();
-			param.fontFileName = font.getPath();
-			param.fontParameters.size = (int) (Statics.WIDTH / font.getRatio());
-			assets.load(font.getPath(), BitmapFont.class, param);
-		}
 	}
 
 	@Override
@@ -95,14 +54,7 @@ public class LoadView extends AbstractView
 	@Override
 	public void update(float delta)
 	{
-		assets.update();
 
-		if (assets.getProgress() == 1.0f)
-		{
-			protector.getState().setLoaded(true);
-			protector.getViews().pop();
-			protector.getViews().push(new MenuView(protector));
-		}
 	}
 
 	@Override

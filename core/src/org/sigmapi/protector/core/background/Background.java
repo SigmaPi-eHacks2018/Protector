@@ -24,30 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core.world.entity;
+package org.sigmapi.protector.core.background;
 
-import org.sigmapi.protector.core.interfaces.Inputable;
-import org.sigmapi.protector.core.interfaces.Renderable;
-import org.sigmapi.protector.core.interfaces.Updateable;
-import org.sigmapi.protector.core.world.World;
+import org.sigmapi.protector.core.Statics;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 
 /**
- * Created by Kyle Fricilone on Mar 02, 2018.
+ * Created by Kyle Fricilone on Mar 03, 2018.
  */
-@AllArgsConstructor
-public abstract class AbstractEntity implements Inputable, Updateable, Renderable
+public enum Background
 {
 
-	protected final World world;
+	GAME0(Statics.GAME_BGS + "0.png", 15f),
+	GAME1(Statics.GAME_BGS + "1.png", 15f);
 
-	protected float length;
+	@Getter
+	private final String path;
 
-	protected float x;
-	protected float y;
+	@Getter
+	private final float ratio;
 
-	protected float xVel;
-	protected float yVel;
-
+	Background(String image, float ratio)
+	{
+		this.path = image;
+		this.ratio = ratio;
+	}
 }

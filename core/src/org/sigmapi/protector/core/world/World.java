@@ -33,9 +33,10 @@ import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.interfaces.Inputable;
 import org.sigmapi.protector.core.interfaces.Renderable;
 import org.sigmapi.protector.core.interfaces.Updateable;
+import org.sigmapi.protector.core.skin.VesselSkin;
 import org.sigmapi.protector.core.world.entity.impl.Asteroid;
 import org.sigmapi.protector.core.world.entity.impl.Laser;
-import org.sigmapi.protector.core.world.entity.impl.Shooter;
+import org.sigmapi.protector.core.world.entity.impl.Vessel;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -52,7 +53,7 @@ public class World implements Inputable, Updateable, Renderable
 	@Getter
 	private final Protector protector;
 
-	private final Shooter shooter;
+	private final Vessel vessel;
 
 	@Getter
 	private final List<Laser> lasers;
@@ -70,11 +71,12 @@ public class World implements Inputable, Updateable, Renderable
 	{
 		this.protector = protector;
 
-		this.shooter = new Shooter(this);
 		this.lasers = new ArrayList<>();
 		this.lasersRemove = new ArrayList<>();
 		this.asteroids = new ArrayList<>();
 		this.asteroidsRemove = new ArrayList<>();
+
+		this.vessel = new Vessel(this, VesselSkin.V2, protector.getLevel());
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class World implements Inputable, Updateable, Renderable
 		asteroids.removeAll(asteroidsRemove);
 		asteroidsRemove.clear();
 
-		shooter.update(delta);
+		vessel.update(delta);
 
 		for (Laser laser : lasers)
 		{
@@ -100,7 +102,7 @@ public class World implements Inputable, Updateable, Renderable
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		shooter.render(batch);
+		vessel.render(batch);
 
 		for (Laser laser : lasers)
 		{
@@ -116,6 +118,6 @@ public class World implements Inputable, Updateable, Renderable
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
-		shooter.accept(events);
+		vessel.accept(events);
 	}
 }

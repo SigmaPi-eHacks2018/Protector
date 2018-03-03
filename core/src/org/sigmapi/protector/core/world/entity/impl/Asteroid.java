@@ -29,6 +29,7 @@ package org.sigmapi.protector.core.world.entity.impl;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.sigmapi.protector.core.input.InputEvent;
+import org.sigmapi.protector.core.skin.AsteroidSkin;
 import org.sigmapi.protector.core.world.World;
 import org.sigmapi.protector.core.world.entity.AbstractEntity;
 
@@ -39,9 +40,13 @@ import java.util.Deque;
  */
 public class Asteroid extends AbstractEntity
 {
-	public Asteroid(World world)
+
+	private final AsteroidSkin skin;
+
+	public Asteroid(World world, AsteroidSkin skin, float length, float x, float y, float xVel, float yVel)
 	{
-		super(world);
+		super(world, length, x, y, xVel, yVel);
+		this.skin = skin;
 	}
 
 	@Override

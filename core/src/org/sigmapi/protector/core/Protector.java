@@ -30,13 +30,19 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
+import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.input.InputManager;
 import org.sigmapi.protector.core.view.AbstractView;
 import org.sigmapi.protector.core.view.ViewManager;
+import org.sigmapi.protector.core.view.impl.LoadView;
 
 import java.util.Deque;
 import java.util.Iterator;
@@ -61,6 +67,14 @@ public class Protector extends ApplicationAdapter
 
 	private InputManager inputs;
 
+	@Getter
+	private State state;
+
+	@Getter
+	private Level level;
+
+	private BitmapFont font;
+
 	@Override
 	public void create()
 	{
@@ -69,8 +83,16 @@ public class Protector extends ApplicationAdapter
 		batch = new SpriteBatch();
 		views = new ViewManager();
 		inputs = new InputManager();
+		state = new State();
+		level = new Level();
 
 		profiler.enable();
+		Gdx.input.setInputProcessor(inputs);
+
+		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(assets.getFileHandleResolver()));
+		assets.setLoader(BitmapFont.class, ".otf", new FreetypeFontLoader(assets.getFileHandleResolver()));
+
+		views.push(new LoadView(this));
 
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
@@ -98,6 +120,12 @@ public class Protector extends ApplicationAdapter
 		{
 			it.next().render(batch);
 		}
+
+		if (state.isLoaded())
+		{
+			drawDebug();
+		}
+
 		batch.end();
 	}
 
@@ -111,6 +139,32 @@ public class Protector extends ApplicationAdapter
 
 		batch.dispose();
 		assets.dispose();
+	}
+
+	private void drawDebug()
+	{
+		if (font == null)
+		{
+			font = assets.get(Font.DEBUG.getPath(), BitmapFont.class);
+		}
+
+		font.setColor(1, 1, 1, 1);
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 48, Statics.HEIGHT - 48);
+		font.draw(batch, "GL Calls: " + profiler.getCalls(), 48, Statics.HEIGHT - 108);
+		font.draw(batch, "Draw Calls: " + profiler.getDrawCalls(), 48, Statics.HEIGHT - 168);
+		font.draw(batch, "Shader Switches: " + profiler.getShaderSwitches(), 48, Statics.HEIGHT - 228);
+		font.draw(batch, "Texture Bindings: " + profiler.getTextureBindings(), 48, Statics.HEIGHT - 288);
+		font.draw(batch, "Vertices: " + profiler.getVertexCount().total, 48, Statics.HEIGHT - 348);
+
+		int h = Statics.HEIGHT - 418;
+		for (Iterator<AbstractView> it = views.getViews().descendingIterator(); it.hasNext(); )
+		{
+			AbstractView view = it.next();
+			font.draw(batch, "Scene: " + view.getClass().getSimpleName(), 48, h);
+			h -= 60;
+		}
+
+		profiler.reset();
 	}
 
 }

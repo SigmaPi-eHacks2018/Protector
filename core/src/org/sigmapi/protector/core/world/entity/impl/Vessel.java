@@ -26,43 +26,82 @@
 
 package org.sigmapi.protector.core.world.entity.impl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import org.sigmapi.protector.core.Level;
 import org.sigmapi.protector.core.input.InputEvent;
+import org.sigmapi.protector.core.input.impl.TouchDraggedEvent;
 import org.sigmapi.protector.core.skin.LaserSkin;
+import org.sigmapi.protector.core.skin.VesselSkin;
 import org.sigmapi.protector.core.Statics;
 import org.sigmapi.protector.core.world.World;
 import org.sigmapi.protector.core.world.entity.AbstractEntity;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
  * Created by Kyle Fricilone on Mar 03, 2018.
  */
-public class Laser extends AbstractEntity
+public class Vessel extends AbstractEntity
 {
 
-	private final LaserSkin skin;
+	private final VesselSkin skin;
+	private final Level level;
 	private final Texture texture;
+	private final Deque<TouchDraggedEvent> drags;
 
-	public Laser(World world, LaserSkin skin, float x, float y, float xVel, float yVel)
+	private final float speed;
+	private float time;
+
+
+	public Vessel(World world, VesselSkin skin, Level level)
 	{
-		super(world, (Statics.WIDTH / skin.getRatio()), x, y, xVel, yVel);
-		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
+		super(world, (Statics.WIDTH / skin.getRatio()), ((Statics.WIDTH / 2) - ((Statics.WIDTH / skin.getRatio()) / 2)), 0.0f, 0.25f, 0.25f);
 		this.skin = skin;
+		this.level = level;
+		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
+		this.drags = new ArrayDeque<>();
 
-		this.x -= (length / 2);
+		this.speed = (Statics.MAX_SPEED - level.getSpeed()) / Statics.MAX_SPEED;
 	}
 
 	@Override
 	public void update(float delta)
 	{
-		y += (yVel * delta);
-		if (y >= Statics.HEIGHT)
+		float deltaX = 0.0f;
+		float deltaY = 0.0f;
+
+		if (!drags.isEmpty())
 		{
-			world.getLasersRemove().add(this);
+			TouchDraggedEvent event;
+			while ((event = drags.poll()) != null)
+			{
+				deltaX += (event.getScreenX() - (x + (length / 2)));
+				deltaY += ((Statics.HEIGHT - event.getScreenY()) - (y + (length / 2)));
+			}
+		}
+
+		x += ((deltaX * 0.60f) * xVel);
+		if (x < 0)
+		{
+			x = 0;
+		}
+
+		y += ((deltaY * 0.60f) * yVel);
+		if (y < 0)
+		{
+			y = 0;
+		}
+
+		time += delta;
+		if (time >= speed)
+		{
+			float lx = (x + (length / 2));
+			float ly = (y + length);
+			world.getLasers().add(new Laser(world, LaserSkin.L100, lx, ly, 0f, 600.0f));
+			time = 0;
 		}
 	}
 
@@ -75,6 +114,12 @@ public class Laser extends AbstractEntity
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
-
+		for (InputEvent event : events)
+		{
+			if (event instanceof TouchDraggedEvent)
+			{
+				drags.offer((TouchDraggedEvent) event);
+			}
+		}
 	}
 }

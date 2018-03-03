@@ -24,30 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core.world.entity;
+package org.sigmapi.protector.core.skin;
 
-import org.sigmapi.protector.core.interfaces.Inputable;
-import org.sigmapi.protector.core.interfaces.Renderable;
-import org.sigmapi.protector.core.interfaces.Updateable;
-import org.sigmapi.protector.core.world.World;
+import org.sigmapi.protector.core.Statics;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Created by Kyle Fricilone on Mar 02, 2018.
+ * Created by Kyle Fricilone on Mar 03, 2018.
  */
-@AllArgsConstructor
-public abstract class AbstractEntity implements Inputable, Updateable, Renderable
+public enum LaserSkin
 {
 
-	protected final World world;
+	DEFAULT("0.png", 35.0f),
+	L100("1.png", 25.0f);
 
-	protected float length;
+	@Getter
+	private final String path;
 
-	protected float x;
-	protected float y;
+	@Getter
+	private final float ratio;
 
-	protected float xVel;
-	protected float yVel;
+	LaserSkin(String image, float ratio)
+	{
+		this.path = Statics.GAME_LASERS + image;
+		this.ratio = ratio;
+	}
 
 }

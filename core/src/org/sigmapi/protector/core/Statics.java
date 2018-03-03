@@ -24,30 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core.world.entity;
+package org.sigmapi.protector.core;
 
-import org.sigmapi.protector.core.interfaces.Inputable;
-import org.sigmapi.protector.core.interfaces.Renderable;
-import org.sigmapi.protector.core.interfaces.Updateable;
-import org.sigmapi.protector.core.world.World;
+import com.badlogic.gdx.Gdx;
 
-import lombok.AllArgsConstructor;
+import java.util.Random;
 
 /**
- * Created by Kyle Fricilone on Mar 02, 2018.
+ * Created by Kyle Fricilone on Mar 03, 2018.
  */
-@AllArgsConstructor
-public abstract class AbstractEntity implements Inputable, Updateable, Renderable
+public class Statics
 {
 
-	protected final World world;
+	public static final int HEIGHT = Gdx.graphics.getHeight();
+	public static final int WIDTH = Gdx.graphics.getWidth();
 
-	protected float length;
+	public static final float MAX_SPEED = 60.0f;
+	public static final int MAX_POWER = 200;
 
-	protected float x;
-	protected float y;
 
-	protected float xVel;
-	protected float yVel;
+	public static final String FONTS = "fonts/";
 
+	public static final String LOAD_TEXURES = "textures/game/";
+	public static final String LOAD_BGS = LOAD_TEXURES + "backgrounds/";
+
+	public static final String MENU_TEXURES = "textures/game/";
+	public static final String MENU_BGS = MENU_TEXURES + "backgrounds/";
+
+	public static final String GAME_TEXURES = "textures/game/";
+	public static final String GAME_BGS = GAME_TEXURES + "backgrounds/";
+	public static final String GAME_ASTEROIDS = GAME_TEXURES + "asteroids/";
+	public static final String GAME_LASERS = GAME_TEXURES + "lasers/";
+	public static final String GAME_VESSELS = GAME_TEXURES + "vessels/";
+
+
+	private static final Random RAND = new Random();
+
+	public static int nextInt(int bound)
+	{
+		return RAND.nextInt(bound);
+	}
+
+
+	private Statics()
+	{
+	}
 }
+
