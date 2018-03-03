@@ -32,6 +32,7 @@ import org.sigmapi.protector.core.interfaces.Updateable;
 import org.sigmapi.protector.core.world.World;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Created by Kyle Fricilone on Mar 02, 2018.
@@ -42,12 +43,19 @@ public abstract class AbstractEntity implements Inputable, Updateable, Renderabl
 
 	protected final World world;
 
+	@Getter
 	protected float length;
 
+	@Getter
 	protected float x;
+
+	@Getter
 	protected float y;
 
+	@Getter
 	protected float xVel;
+
+	@Getter
 	protected float yVel;
 
 }

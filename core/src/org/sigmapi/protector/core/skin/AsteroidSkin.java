@@ -37,10 +37,10 @@ import lombok.Getter;
 public enum AsteroidSkin
 {
 
-	A0("0.png", 15f),
-	A1("1.png", 15f),
-	A2("2.png", 15f),
-	A3("3.png", 15f);
+	A0("0.png", 5.0f),
+	A1("1.png", 5.0f),
+	A2("2.png", 5.0f),
+	A3("3.png", 5.0f);
 
 	@Getter
 	private final String path;
@@ -52,5 +52,12 @@ public enum AsteroidSkin
 	{
 		this.path = Statics.GAME_ASTEROIDS + image;
 		this.ratio = ratio;
+	}
+
+	private static final AsteroidSkin[] SKINS = values();
+
+	public static AsteroidSkin get()
+	{
+		return SKINS[Statics.nextInt(SKINS.length)];
 	}
 }

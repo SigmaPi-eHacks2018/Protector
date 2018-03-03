@@ -52,8 +52,6 @@ public class GameView extends AbstractView
 	private float y0;
 	private float y1;
 
-	private final float BG_VEL = -100f;
-
 	public GameView(Protector protector)
 	{
 		super(protector);
@@ -79,8 +77,8 @@ public class GameView extends AbstractView
 		{
 			world.update(delta);
 
-			y0 += BG_VEL * delta;
-			y1 += BG_VEL * delta;
+			y0 += Statics.BG_VEL * delta;
+			y1 += Statics.BG_VEL * delta;
 
 			if (y0 <= -Statics.HEIGHT)
 			{

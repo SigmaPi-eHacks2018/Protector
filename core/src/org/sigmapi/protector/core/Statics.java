@@ -42,6 +42,10 @@ public class Statics
 	public static final float MAX_SPEED = 60.0f;
 	public static final int MAX_POWER = 200;
 
+	public static final float BG_VEL = -100f;
+
+	public static final int MAX_STRENGTH = 10_000;
+
 
 	public static final String FONTS = "fonts/";
 
@@ -63,6 +67,16 @@ public class Statics
 	public static int nextInt(int bound)
 	{
 		return RAND.nextInt(bound);
+	}
+
+	private static final int[] DIST = { 1, 2, 3, 4, 5, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
+	//public static final String s = "1234566777788888888888888888888999999999999999999999999999999999999999";
+
+	public static int nextStrength(int max)
+	{
+		double base = (DIST[RAND.nextInt(DIST.length)] / 10d);
+		double value = (base + (Math.random() / 10d));
+		return (int) (max * value);
 	}
 
 

@@ -26,14 +26,22 @@
 
 package org.sigmapi.protector.core.world.entity.impl;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import org.sigmapi.protector.core.Statics;
+import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.skin.AsteroidSkin;
 import org.sigmapi.protector.core.world.World;
 import org.sigmapi.protector.core.world.entity.AbstractEntity;
 
 import java.util.Deque;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by Kyle Fricilone on Mar 03, 2018.
@@ -42,28 +50,59 @@ public class Asteroid extends AbstractEntity
 {
 
 	private final AsteroidSkin skin;
+	private final Texture texture;
+	private final BitmapFont font;
 
-	public Asteroid(World world, AsteroidSkin skin, float length, float x, float y, float xVel, float yVel)
+	@Getter
+	@Setter
+	private int strength;
+	private float color;
+
+	public Asteroid(World world, AsteroidSkin skin, float x, float y, float xVel, float yVel)
 	{
-		super(world, length, x, y, xVel, yVel);
+		super(world, (Statics.WIDTH / skin.getRatio()), x, y, xVel, yVel);
 		this.skin = skin;
+		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
+		this.font = world.getProtector().getAssets().get(Font.ASTEROID.getPath(), BitmapFont.class);
+
+		this.strength = Statics.nextStrength(Statics.MAX_STRENGTH);
 	}
 
 	@Override
 	public void update(float delta)
 	{
+		y += (yVel * delta);
+		if ((y + length) <= 0)
+		{
+			world.getAsteroidsRemove().add(this);
+			return;
+		}
 
+		float cb = strength / (float) Statics.MAX_STRENGTH;
+		if (cb >= 0.5f)
+		{
+			color = Color.toFloatBits(1.0f, ((1.0f - cb) / 0.5f), 0.0f, 1.0f);
+		}
+
+		else
+		{
+			color = Color.toFloatBits(cb * 2.0f, 1.0f, 0.0f, 1.0f);
+		}
 	}
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
+		float prevColor = batch.getPackedColor();
 
+		batch.setColor(color);
+		batch.draw(texture, x, y, length, length);
+		batch.setColor(prevColor);
+		font.draw(batch, String.valueOf(strength), (x + (length / 2)) - (Font.ASTEROID.getRatio() * 1.5f), (y + (length / 2)) + 25);
 	}
 
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
-
 	}
 }

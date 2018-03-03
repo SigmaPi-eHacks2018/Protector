@@ -26,7 +26,6 @@
 
 package org.sigmapi.protector.core.view.impl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.sigmapi.protector.core.Protector;

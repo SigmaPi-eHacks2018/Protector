@@ -26,7 +26,6 @@
 
 package org.sigmapi.protector.core.world.entity.impl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -75,6 +74,5 @@ public class Laser extends AbstractEntity
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
-
 	}
 }

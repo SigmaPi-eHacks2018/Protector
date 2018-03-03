@@ -58,7 +58,7 @@ public class Vessel extends AbstractEntity
 
 	public Vessel(World world, VesselSkin skin, Level level)
 	{
-		super(world, (Statics.WIDTH / skin.getRatio()), ((Statics.WIDTH / 2) - ((Statics.WIDTH / skin.getRatio()) / 2)), 0.0f, 0.25f, 0.25f);
+		super(world, (Statics.WIDTH / skin.getRatio()), ((Statics.WIDTH / 2.0f) - ((Statics.WIDTH / skin.getRatio()) / 2.0f)), 0.0f, 0.25f, 0.25f);
 		this.skin = skin;
 		this.level = level;
 		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
