@@ -57,8 +57,8 @@ public class GameView extends AbstractView
 		super(protector);
 		this.world = new World(protector);
 
-		bg0 = protector.getAssets().get(Background.GAME0.getPath(), Texture.class);
-		bg1 = protector.getAssets().get(Background.GAME1.getPath(), Texture.class);
+		bg0 = protector.getAssets().get(Background.BG0.getPath(), Texture.class);
+		bg1 = protector.getAssets().get(Background.BG1.getPath(), Texture.class);
 
 		y0 = 0;
 		y1 = Statics.HEIGHT;

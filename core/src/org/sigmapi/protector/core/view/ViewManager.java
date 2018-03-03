@@ -51,4 +51,9 @@ public class ViewManager
 		view.dispose();
 	}
 
+	public AbstractView peek()
+	{
+		return views.peek();
+	}
+
 }

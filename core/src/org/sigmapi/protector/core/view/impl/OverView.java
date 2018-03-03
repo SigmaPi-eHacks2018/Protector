@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.input.InputEvent;
+import org.sigmapi.protector.core.input.impl.TouchDownEvent;
 import org.sigmapi.protector.core.view.AbstractView;
 
 import java.util.Deque;
@@ -48,7 +49,15 @@ public class OverView extends AbstractView
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
-
+		for (InputEvent event : events)
+		{
+			if (event instanceof TouchDownEvent)
+			{
+				protector.getViews().pop();
+				protector.getViews().pop();
+				protector.getViews().push(new MenuView(protector));
+			}
+		}
 	}
 
 	@Override

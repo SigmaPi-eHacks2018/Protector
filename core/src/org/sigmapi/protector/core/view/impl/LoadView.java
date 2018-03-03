@@ -52,6 +52,12 @@ public class LoadView extends AbstractView
 
 	private final AssetManager assets;
 
+	private final Texture bg0;
+	private final Texture bg1;
+
+	private float y0;
+	private float y1;
+
 	public LoadView(Protector protector)
 	{
 		super(protector);
@@ -61,6 +67,12 @@ public class LoadView extends AbstractView
 		{
 			assets.load(bg.getPath(), Texture.class);
 		}
+
+		assets.finishLoading();
+		bg0 = assets.get(Background.BG0.getPath(), Texture.class);
+		bg1 = assets.get(Background.BG1.getPath(), Texture.class);
+		y0 = 0;
+		y1 = Statics.HEIGHT;
 
 		for (AsteroidSkin skin : AsteroidSkin.values())
 		{
@@ -97,6 +109,19 @@ public class LoadView extends AbstractView
 	{
 		assets.update();
 
+		y0 += Statics.BG_VEL * delta;
+		y1 += Statics.BG_VEL * delta;
+
+		if (y0 <= -Statics.HEIGHT)
+		{
+			y0 = Statics.HEIGHT;
+		}
+
+		if (y1 <= -Statics.HEIGHT)
+		{
+			y1 = Statics.HEIGHT;
+		}
+
 		if (assets.getProgress() == 1.0f)
 		{
 			protector.getState().setLoaded(true);
@@ -108,7 +133,8 @@ public class LoadView extends AbstractView
 	@Override
 	public void render(SpriteBatch batch)
 	{
-
+		batch.draw(bg0, 0, y0, Statics.WIDTH, Statics.HEIGHT + 1);
+		batch.draw(bg1, 0, y1, Statics.WIDTH, Statics.HEIGHT + 1);
 	}
 
 	@Override

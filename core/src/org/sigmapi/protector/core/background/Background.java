@@ -37,8 +37,8 @@ import lombok.Getter;
 public enum Background
 {
 
-	GAME0(Statics.GAME_BGS + "0.png", 15f),
-	GAME1(Statics.GAME_BGS + "1.png", 15f);
+	BG0("0.png", 15f),
+	BG1("1.png", 15f);
 
 	@Getter
 	private final String path;
@@ -48,7 +48,7 @@ public enum Background
 
 	Background(String image, float ratio)
 	{
-		this.path = image;
+		this.path = Statics.BGS + image;
 		this.ratio = ratio;
 	}
 }

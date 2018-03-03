@@ -101,10 +101,7 @@ public class Protector extends ApplicationAdapter
 	public void render()
 	{
 		Deque<InputEvent> events = inputs.getEvents();
-		for (AbstractView view : views.getViews())
-		{
-			view.accept(events);
-		}
+		views.peek().accept(events);
 		events.clear();
 
 		float delta = Gdx.graphics.getDeltaTime();
@@ -160,7 +157,7 @@ public class Protector extends ApplicationAdapter
 		for (Iterator<AbstractView> it = views.getViews().descendingIterator(); it.hasNext(); )
 		{
 			AbstractView view = it.next();
-			font.draw(batch, "Scene: " + view.getClass().getSimpleName(), 48, h);
+			font.draw(batch, "View: " + view.getClass().getSimpleName(), 48, h);
 			h -= 60;
 		}
 
