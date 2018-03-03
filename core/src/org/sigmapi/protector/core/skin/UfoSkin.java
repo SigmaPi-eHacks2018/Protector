@@ -24,29 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core;
+package org.sigmapi.protector.core.skin;
+
+import org.sigmapi.protector.core.Statics;
 
 import lombok.Getter;
-import lombok.Setter;
+
 
 /**
  * Created by Kyle Fricilone on Mar 03, 2018.
  */
-public class Level
+public enum UfoSkin
 {
 
-	@Getter
-	@Setter
-	private int power;
+	A0("0.png", 5.0f),
+	A1("1.png", 5.0f),
+	A2("2.png", 5.0f);
 
 	@Getter
-	@Setter
-	private float speed;
+	private final String path;
 
-	public Level()
+	@Getter
+	private final float ratio;
+
+	UfoSkin(String image, float ratio)
 	{
-		this.power = 0;
-		this.speed = 45.0f;
+		this.path = Statics.GAME_UFOS + image;
+		this.ratio = ratio;
 	}
 
+	private static final UfoSkin[] SKINS = values();
+
+	public static UfoSkin get()
+	{
+		return SKINS[Statics.nextInt(SKINS.length)];
+	}
 }

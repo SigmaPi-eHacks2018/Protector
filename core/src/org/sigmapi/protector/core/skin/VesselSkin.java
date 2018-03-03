@@ -38,7 +38,9 @@ public enum VesselSkin
 
 	DEFAULT("0.png", 8.0f),
 	V1("1.png", 8.0f),
-	V2("2.png", 8.0f);
+	V2("2.png", 8.0f),
+	V3("3.png", 8.0f),
+	V4("4.png", 8.0f);
 
 	@Getter
 	private final String path;

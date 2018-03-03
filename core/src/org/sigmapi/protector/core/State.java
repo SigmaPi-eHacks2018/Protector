@@ -26,7 +26,8 @@
 
 package org.sigmapi.protector.core;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by Kyle Fricilone on Mar 03, 2018.
@@ -34,33 +35,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class State
 {
 
-	private final AtomicBoolean loaded;
-	private final AtomicBoolean paused;
+	@Getter
+	@Setter
+	private boolean loaded;
+
+	@Getter
+	@Setter
+	private boolean paused;
 
 	public State()
 	{
-		this.loaded = new AtomicBoolean(false);
-		this.paused = new AtomicBoolean(false);
-	}
-
-	public boolean isLoaded()
-	{
-		return loaded.get();
-	}
-
-	public boolean isPaused()
-	{
-		return paused.get();
-	}
-
-	public void setLoaded(boolean loaded)
-	{
-		this.loaded.set(loaded);
-	}
-
-	public void setPaused(boolean paused)
-	{
-		this.paused.set(paused);
+		this.loaded = false;
+		this.paused = false;
 	}
 
 }

@@ -28,6 +28,7 @@ package org.sigmapi.protector.core.world.entity.impl;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import org.sigmapi.protector.core.Level;
 import org.sigmapi.protector.core.input.InputEvent;
@@ -50,10 +51,14 @@ public class Vessel extends AbstractEntity
 	private final VesselSkin skin;
 	private final Level level;
 	private final Texture texture;
+	private final TextureRegion frameA;
+	private final TextureRegion frameB;
 	private final Deque<TouchDraggedEvent> drags;
 
 	private final float speed;
 	private float time;
+	private int frames = 0;
+	private boolean animA = true;
 
 
 	public Vessel(World world, VesselSkin skin, Level level)
@@ -62,9 +67,11 @@ public class Vessel extends AbstractEntity
 		this.skin = skin;
 		this.level = level;
 		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
+		this.frameA = new TextureRegion(texture, 0, 0, 45, 45);
+		this.frameB = new TextureRegion(texture, 45, 0, 45, 45);
 		this.drags = new ArrayDeque<>();
 
-		this.speed = (Statics.MAX_SPEED - level.getSpeed()) / Statics.MAX_SPEED;
+		this.speed = ((Statics.MAX_SPEED - level.getSpeed()) / Statics.MAX_SPEED) / 2.0f;
 	}
 
 	@Override
@@ -100,15 +107,30 @@ public class Vessel extends AbstractEntity
 		{
 			float lx = (x + (length / 2));
 			float ly = (y + length);
-			world.getLasers().add(new Laser(world, LaserSkin.L100, lx, ly, 0f, 600.0f));
+			world.getLasers().add(new Laser(world, LaserSkin.L100, lx, ly, 0f, 1000.0f));
 			time = 0;
+		}
+
+		frames++;
+		if (frames == 5)
+		{
+			animA = !animA;
+			frames = 0;
 		}
 	}
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		batch.draw(texture, x, y, length, length);
+		if (animA)
+		{
+			batch.draw(frameA, x, y, length, length);
+		}
+
+		else
+		{
+			batch.draw(frameB, x, y, length, length);
+		}
 	}
 
 	@Override

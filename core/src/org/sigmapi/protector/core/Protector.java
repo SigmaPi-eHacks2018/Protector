@@ -55,12 +55,12 @@ import lombok.Getter;
 public class Protector extends ApplicationAdapter
 {
 
-	@Getter
-	private AssetManager assets;
-
 	private GLProfiler profiler;
 
 	private SpriteBatch batch;
+
+	@Getter
+	private AssetManager assets;
 
 	@Getter
 	private ViewManager views;
@@ -78,9 +78,9 @@ public class Protector extends ApplicationAdapter
 	@Override
 	public void create()
 	{
-		assets = new AssetManager();
 		profiler = new GLProfiler(Gdx.graphics);
 		batch = new SpriteBatch();
+		assets = new AssetManager();
 		views = new ViewManager();
 		inputs = new InputManager();
 		state = new State();

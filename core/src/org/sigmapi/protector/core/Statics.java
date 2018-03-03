@@ -46,6 +46,8 @@ public class Statics
 
 	public static final int MAX_STRENGTH = 10_000;
 
+	public static final float LENGTH = WIDTH / 5.0f;
+
 
 	public static final String FONTS = "fonts/";
 
@@ -59,6 +61,7 @@ public class Statics
 	public static final String GAME_BGS = GAME_TEXURES + "backgrounds/";
 	public static final String GAME_ASTEROIDS = GAME_TEXURES + "asteroids/";
 	public static final String GAME_LASERS = GAME_TEXURES + "lasers/";
+	public static final String GAME_UFOS = GAME_TEXURES + "ufos/";
 	public static final String GAME_VESSELS = GAME_TEXURES + "vessels/";
 
 

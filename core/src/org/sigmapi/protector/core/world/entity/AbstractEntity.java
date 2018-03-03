@@ -33,6 +33,7 @@ import org.sigmapi.protector.core.world.World;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by Kyle Fricilone on Mar 02, 2018.
@@ -50,6 +51,7 @@ public abstract class AbstractEntity implements Inputable, Updateable, Renderabl
 	protected float x;
 
 	@Getter
+	@Setter
 	protected float y;
 
 	@Getter

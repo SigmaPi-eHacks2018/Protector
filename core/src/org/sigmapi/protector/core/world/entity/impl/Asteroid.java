@@ -78,8 +78,14 @@ public class Asteroid extends AbstractEntity
 			return;
 		}
 
+
 		float cb = strength / (float) Statics.MAX_STRENGTH;
-		if (cb >= 0.5f)
+		if (cb >= 1.0f)
+		{
+			color = Color.toFloatBits(1.0f, 0.0f, 1.0f - (2.0f - cb), 1.0f);
+		}
+
+		else if (cb >= 0.5f)
 		{
 			color = Color.toFloatBits(1.0f, ((1.0f - cb) / 0.5f), 0.0f, 1.0f);
 		}

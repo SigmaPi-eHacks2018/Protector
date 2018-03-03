@@ -26,10 +26,12 @@
 
 package org.sigmapi.protector.core.world;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.Statics;
+import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.interfaces.Inputable;
 import org.sigmapi.protector.core.interfaces.Renderable;
@@ -71,8 +73,13 @@ public class World implements Inputable, Updateable, Renderable
 	@Getter
 	private final List<Asteroid> asteroidsRemove;
 
+	private final BitmapFont font;
+
 	private boolean over = false;
 	private int score = 0;
+	private float time = 0;
+
+	private float velocity = Statics.HEIGHT / -6.0f;
 
 	public World(Protector protector)
 	{
@@ -83,24 +90,34 @@ public class World implements Inputable, Updateable, Renderable
 		this.asteroids = new ArrayList<>();
 		this.asteroidsRemove = new ArrayList<>();
 
+		this.font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
+
 		this.vessel = new Vessel(this, VesselSkin.V2, protector.getLevel());
 
 		int w = Statics.WIDTH / 5;
 		for (int i = 0; i < 5; i++)
 		{
-			asteroids.add(new Asteroid(this, AsteroidSkin.get(), w * i, Statics.HEIGHT, 0.0f, -100.0f));
+			asteroids.add(new Asteroid(this, AsteroidSkin.get(), w * i, Statics.HEIGHT, 0.0f, velocity));
 		}
 	}
 
 	@Override
 	public void update(float delta)
 	{
+		time += delta;
+
 		for (Asteroid asteroid : asteroids)
 		{
 			asteroid.update(delta);
 		}
 		asteroids.removeAll(asteroidsRemove);
 		asteroidsRemove.clear();
+
+		if (time >= 5.0f)
+		{
+			generateBlocks(3);
+			time = 0;
+		}
 
 		if (!over)
 		{
@@ -118,7 +135,7 @@ public class World implements Inputable, Updateable, Renderable
 		{
 			for (Asteroid asteroid : asteroids)
 			{
-				if (collides(vessel, asteroid))
+				if (collides(vessel, asteroid, 2))
 				{
 					lasers.clear();
 					protector.getViews().push(new OverView(protector));
@@ -131,20 +148,21 @@ public class World implements Inputable, Updateable, Renderable
 			{
 				for (Asteroid asteroid : asteroids)
 				{
-					if (collides(laser, asteroid))
+					if (collides(laser, asteroid, 2))
 					{
 						lasersRemove.add(laser);
 
-						score += 250;
-						int strength = asteroid.getStrength() - 250;
-						if (strength <= 0)
+						int strength = asteroid.getStrength();
+						if (strength < 250)
 						{
 							asteroids.remove(asteroid);
+							score += strength;
 						}
 
 						else
 						{
-							asteroid.setStrength(strength);
+							asteroid.setStrength(strength - 250);
+							score += 250;
 						}
 
 						break;
@@ -171,6 +189,8 @@ public class World implements Inputable, Updateable, Renderable
 		{
 			asteroid.render(batch);
 		}
+
+		font.draw(batch, String.valueOf(score), ((Statics.WIDTH / 2.0f) - (10 * Font.GAME.getRatio())), (Statics.HEIGHT - 50));
 	}
 
 	@Override
@@ -179,17 +199,48 @@ public class World implements Inputable, Updateable, Renderable
 		vessel.accept(events);
 	}
 
-	private static boolean collides(AbstractEntity a, AbstractEntity b)
+	private void generateBlocks(int wave)
 	{
-		float l1x = a.getX();
-		float l1y = a.getY();
-		float r1x = a.getX() + a.getLength();
-		float r1y = a.getY() + a.getLength();
+		List<Asteroid> toAdd = new ArrayList<>();
+		for (int i = 0; i < wave; i++)
+		{
+			patternLoop:
+			for (int j = 0; j < 5; j++)
+			{
+				float x = Statics.LENGTH * Statics.nextInt(5);
+				float y = Statics.HEIGHT + (Statics.LENGTH * Statics.nextInt(3));
+				Asteroid newAsteroid = new Asteroid(this, AsteroidSkin.get(), x, y, 0.0f, velocity);
 
-		float l2x = b.getX();
-		float l2y = b.getY();
-		float r2x = b.getX() + b.getLength();
-		float r2y = b.getY() + b.getLength();
+				for (Asteroid asteroid : toAdd)
+				{
+					if (collides(newAsteroid, asteroid, 5))
+					{
+						if (asteroid.getStrength() < Statics.MAX_STRENGTH)
+						{
+							asteroid.setStrength(asteroid.getStrength() + newAsteroid.getStrength());
+						}
+						continue patternLoop;
+					}
+				}
+
+				toAdd.add(newAsteroid);
+			}
+		}
+
+		asteroids.addAll(toAdd);
+	}
+
+	private static boolean collides(AbstractEntity a, AbstractEntity b, float gap)
+	{
+		float l1x = a.getX() + gap;
+		float l1y = a.getY() + gap;
+		float r1x = (a.getX() + a.getLength()) - gap;
+		float r1y = (a.getY() + a.getLength()) - gap;
+
+		float l2x = b.getX() + gap;
+		float l2y = b.getY() + gap;
+		float r2x = (b.getX() + b.getLength()) - gap;
+		float r2y = (b.getY() + b.getLength()) - gap;
 
 		return !(l1x > r2x) && !(l2x > r1x) && !(l1y > r2y) && !(l2y > r1y);
 	}
