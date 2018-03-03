@@ -1,0 +1,15 @@
+language: android
+jdk: oraclejdk8
+sudo: false
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - build-tools-27.0.1
+    - android-27
+
+before_install:
+ - yes | sdkmanager "platforms;android-27"
+
+script: ./gradlew build
