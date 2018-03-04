@@ -5,7 +5,7 @@ Protector is a 2d android game, thats not very fun yet
 ## Project Layout
 
 - android - Contains configurations for android and the main android activity class
-- core - Contains the actually game code
+- core - Contains the actual game code
 
 ### License
 
