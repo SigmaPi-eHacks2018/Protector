@@ -26,9 +26,12 @@
 
 package org.sigmapi.protector.core.view.impl;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.sigmapi.protector.core.Protector;
+import org.sigmapi.protector.core.Statics;
+import org.sigmapi.protector.core.background.Background;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.input.impl.TouchDownEvent;
 import org.sigmapi.protector.core.view.AbstractView;
@@ -41,9 +44,12 @@ import java.util.Deque;
 public class OverView extends AbstractView
 {
 
+	private final Texture bg;
+
 	public OverView(Protector protector)
 	{
 		super(protector);
+		bg = protector.getAssets().get(Background.OVER.getPath(), Texture.class);
 	}
 
 	@Override
@@ -63,18 +69,16 @@ public class OverView extends AbstractView
 	@Override
 	public void update(float delta)
 	{
-
 	}
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
-
+		batch.draw(bg, 0, 0, Statics.WIDTH, Statics.HEIGHT);
 	}
 
 	@Override
 	public void dispose()
 	{
-
 	}
 }

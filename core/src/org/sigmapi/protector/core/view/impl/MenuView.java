@@ -45,6 +45,7 @@ public class MenuView extends AbstractView
 {
 	private final Texture bg0;
 	private final Texture bg1;
+	private final Texture logo;
 
 	private float y0;
 	private float y1;
@@ -55,6 +56,7 @@ public class MenuView extends AbstractView
 
 		bg0 = protector.getAssets().get(Background.BG0.getPath(), Texture.class);
 		bg1 = protector.getAssets().get(Background.BG1.getPath(), Texture.class);
+		logo = protector.getAssets().get(Statics.LOGO, Texture.class);
 
 		y0 = 0;
 		y1 = Statics.HEIGHT;
@@ -95,6 +97,7 @@ public class MenuView extends AbstractView
 	{
 		batch.draw(bg0, 0, y0, Statics.WIDTH, Statics.HEIGHT + 1);
 		batch.draw(bg1, 0, y1, Statics.WIDTH, Statics.HEIGHT + 1);
+		batch.draw(logo, 0, 0, Statics.WIDTH, Statics.HEIGHT);
 	}
 
 	@Override

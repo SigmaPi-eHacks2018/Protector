@@ -51,13 +51,16 @@ public class Statics
 
 	public static final String FONTS = "fonts/";
 
+
+	public static final String LOGO = "textures/0.png";
+
 	public static final String BGS = "textures/backgrounds/";
 
-	public static final String LOAD_TEXURES = "textures/game/";
-
-	public static final String MENU_TEXURES = "textures/game/";
+	public static final String LOAD_TEXURES = "textures/load/";
+	public static final String MENU_TEXURES = "textures/menu/";
 
 	public static final String GAME_TEXURES = "textures/game/";
+	public static final String GAME_EXPLOSION = GAME_TEXURES + "0.png";
 	public static final String GAME_ASTEROIDS = GAME_TEXURES + "asteroids/";
 	public static final String GAME_LASERS = GAME_TEXURES + "lasers/";
 	public static final String GAME_UFOS = GAME_TEXURES + "ufos/";

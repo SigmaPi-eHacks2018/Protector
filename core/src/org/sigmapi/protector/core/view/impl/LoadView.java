@@ -38,6 +38,7 @@ import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.skin.AsteroidSkin;
 import org.sigmapi.protector.core.skin.LaserSkin;
+import org.sigmapi.protector.core.skin.UfoSkin;
 import org.sigmapi.protector.core.skin.VesselSkin;
 import org.sigmapi.protector.core.Statics;
 import org.sigmapi.protector.core.view.AbstractView;
@@ -54,9 +55,16 @@ public class LoadView extends AbstractView
 
 	private final Texture bg0;
 	private final Texture bg1;
+	private final Texture logo;
+	private final Texture bar;
+	private final Texture box;
 
+	private float percent;
 	private float y0;
 	private float y1;
+
+	private float width;
+	private float height;
 
 	public LoadView(Protector protector)
 	{
@@ -68,12 +76,23 @@ public class LoadView extends AbstractView
 			assets.load(bg.getPath(), Texture.class);
 		}
 
+		assets.load(Statics.LOGO, Texture.class);
+		assets.load(Statics.LOAD_TEXURES + "0.png", Texture.class);
+		assets.load(Statics.LOAD_TEXURES + "1.png", Texture.class);
 		assets.finishLoading();
+
 		bg0 = assets.get(Background.BG0.getPath(), Texture.class);
 		bg1 = assets.get(Background.BG1.getPath(), Texture.class);
+		logo = assets.get(Statics.LOGO, Texture.class);
+		bar = assets.get(Statics.LOAD_TEXURES + "0.png", Texture.class);
+		box = assets.get(Statics.LOAD_TEXURES + "1.png", Texture.class);
 		y0 = 0;
 		y1 = Statics.HEIGHT;
+		width = Statics.WIDTH * 0.75f;
+		height = Statics.HEIGHT * 0.25f;
 
+
+		assets.load(Statics.GAME_EXPLOSION, Texture.class);
 		for (AsteroidSkin skin : AsteroidSkin.values())
 		{
 			assets.load(skin.getPath(), Texture.class);
@@ -85,6 +104,11 @@ public class LoadView extends AbstractView
 		}
 
 		for (VesselSkin skin : VesselSkin.values())
+		{
+			assets.load(skin.getPath(), Texture.class);
+		}
+
+		for (UfoSkin skin : UfoSkin.values())
 		{
 			assets.load(skin.getPath(), Texture.class);
 		}
@@ -108,6 +132,7 @@ public class LoadView extends AbstractView
 	public void update(float delta)
 	{
 		assets.update();
+		percent = assets.getProgress();
 
 		y0 += Statics.BG_VEL * delta;
 		y1 += Statics.BG_VEL * delta;
@@ -122,7 +147,7 @@ public class LoadView extends AbstractView
 			y1 = Statics.HEIGHT;
 		}
 
-		if (assets.getProgress() == 1.0f)
+		if (percent == 1.0f)
 		{
 			protector.getState().setLoaded(true);
 			protector.getViews().pop();
@@ -135,11 +160,13 @@ public class LoadView extends AbstractView
 	{
 		batch.draw(bg0, 0, y0, Statics.WIDTH, Statics.HEIGHT + 1);
 		batch.draw(bg1, 0, y1, Statics.WIDTH, Statics.HEIGHT + 1);
+		batch.draw(logo, 0, 0, Statics.WIDTH, Statics.HEIGHT);
+		batch.draw(box, ((Statics.WIDTH / 2.0f) - (width / 2)) - 5, height, width + 10, box.getHeight());
+		batch.draw(bar, ((Statics.WIDTH / 2.0f) - (width / 2)), height + 5, (percent * width), bar.getHeight());
 	}
 
 	@Override
 	public void dispose()
 	{
-
 	}
 }

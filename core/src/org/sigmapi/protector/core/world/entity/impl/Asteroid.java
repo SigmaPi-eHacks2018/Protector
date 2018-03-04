@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import org.sigmapi.protector.core.Statics;
 import org.sigmapi.protector.core.font.Font;
@@ -51,6 +52,8 @@ public class Asteroid extends AbstractEntity
 
 	private final AsteroidSkin skin;
 	private final Texture texture;
+	private final Texture explosion;
+	private final TextureRegion[] explosions;
 	private final BitmapFont font;
 
 	@Getter
@@ -58,12 +61,24 @@ public class Asteroid extends AbstractEntity
 	private int strength;
 	private float color;
 
+	@Getter
+	@Setter
+	private boolean exploded = false;
+	private int frames = 0;
+	private int anim = 0;
+
 	public Asteroid(World world, AsteroidSkin skin, float x, float y, float xVel, float yVel)
 	{
 		super(world, (Statics.WIDTH / skin.getRatio()), x, y, xVel, yVel);
 		this.skin = skin;
 		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
+		this.explosion = world.getProtector().getAssets().get(Statics.GAME_EXPLOSION, Texture.class);
 		this.font = world.getProtector().getAssets().get(Font.ASTEROID.getPath(), BitmapFont.class);
+		this.explosions = new TextureRegion[5];
+		for (int i = 0; i < explosions.length; i++)
+		{
+			this.explosions[i] = new TextureRegion(explosion, (i * 45), 0, 45, 45);
+		}
 
 		this.strength = Statics.nextStrength(Statics.MAX_STRENGTH);
 	}
@@ -79,32 +94,57 @@ public class Asteroid extends AbstractEntity
 		}
 
 
-		float cb = strength / (float) Statics.MAX_STRENGTH;
-		if (cb >= 1.0f)
+		if (!exploded)
 		{
-			color = Color.toFloatBits(1.0f, 0.0f, 1.0f - (2.0f - cb), 1.0f);
+			float cb = strength / (float) Statics.MAX_STRENGTH;
+			if (cb >= 1.0f)
+			{
+				color = Color.toFloatBits(1.0f, 0.0f, 1.0f - (2.0f - cb), 1.0f);
+			}
+
+			else if (cb >= 0.5f)
+			{
+				color = Color.toFloatBits(1.0f, ((1.0f - cb) / 0.5f), 0.0f, 1.0f);
+			}
+
+			else
+			{
+				color = Color.toFloatBits(cb * 2.0f, 1.0f, 0.0f, 1.0f);
+			}
 		}
 
-		else if (cb >= 0.5f)
+		if (exploded)
 		{
-			color = Color.toFloatBits(1.0f, ((1.0f - cb) / 0.5f), 0.0f, 1.0f);
-		}
+			frames++;
+			if (frames == 10)
+			{
+				frames = 0;
 
-		else
-		{
-			color = Color.toFloatBits(cb * 2.0f, 1.0f, 0.0f, 1.0f);
+				anim++;
+				if (anim == 5)
+				{
+					world.getAsteroidsRemove().add(this);
+				}
+			}
 		}
 	}
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		float prevColor = batch.getPackedColor();
+		if (exploded)
+		{
+			batch.draw(explosions[anim], x, y, length, length);
+		}
 
-		batch.setColor(color);
-		batch.draw(texture, x, y, length, length);
-		batch.setColor(prevColor);
-		font.draw(batch, String.valueOf(strength), (x + (length / 2)) - (Font.ASTEROID.getRatio() * 1.5f), (y + (length / 2)) + 25);
+		else
+		{
+			float prevColor = batch.getPackedColor();
+			batch.setColor(color);
+			batch.draw(texture, x, y, length, length);
+			batch.setColor(prevColor);
+			font.draw(batch, String.valueOf(strength), (x + (length / 2)) - (Font.ASTEROID.getRatio() * 1.5f), (y + (length / 2)) + 25);
+		}
 	}
 
 	@Override

@@ -59,7 +59,25 @@ public class Laser extends AbstractEntity
 	public void update(float delta)
 	{
 		y += (yVel * delta);
+		x += (xVel * delta);
 		if (y >= Statics.HEIGHT)
+		{
+			world.getLasersRemove().add(this);
+			return;
+		}
+
+		if (y <= 0)
+		{
+			world.getLasersRemove().add(this);
+		}
+
+		if (x >= Statics.WIDTH)
+		{
+			world.getLasersRemove().add(this);
+			return;
+		}
+
+		if (x <= 0)
 		{
 			world.getLasersRemove().add(this);
 		}

@@ -30,16 +30,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import org.sigmapi.protector.core.Level;
-import org.sigmapi.protector.core.input.InputEvent;
-import org.sigmapi.protector.core.input.impl.TouchDraggedEvent;
-import org.sigmapi.protector.core.skin.LaserSkin;
-import org.sigmapi.protector.core.skin.VesselSkin;
 import org.sigmapi.protector.core.Statics;
+import org.sigmapi.protector.core.input.InputEvent;
+import org.sigmapi.protector.core.skin.LaserSkin;
+import org.sigmapi.protector.core.skin.UfoSkin;
 import org.sigmapi.protector.core.world.World;
 import org.sigmapi.protector.core.world.entity.AbstractEntity;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
 
 import lombok.Getter;
@@ -47,34 +44,29 @@ import lombok.Getter;
 /**
  * Created by Kyle Fricilone on Mar 03, 2018.
  */
-public class Vessel extends AbstractEntity
+public class Ufo extends AbstractEntity
 {
 
-	private final VesselSkin skin;
-	private final Level level;
+	private final UfoSkin skin;
 	private final Texture texture;
 	private final TextureRegion[] animations;
 	private final Texture explosion;
 	private final TextureRegion[] explosions;
-	private final Deque<TouchDraggedEvent> drags;
+	private float time;
+	private float speed;
 
-	private final float speed;
+	private final int maxShots;
+	private int shots = 0;
 
 	@Getter
 	private boolean exploded = false;
-
-	@Getter
-	private boolean draw = true;
-	private float time;
 	private int frames = 0;
 	private int anim = 0;
 
-
-	public Vessel(World world, VesselSkin skin, Level level)
+	public Ufo(World world, UfoSkin skin, float x, float y, float xVel, float yVel, int maxShots, float speed)
 	{
-		super(world, (Statics.WIDTH / skin.getRatio()), ((Statics.WIDTH / 2.0f) - ((Statics.WIDTH / skin.getRatio()) / 2.0f)), 0.0f, 0.25f, 0.25f);
+		super(world, (Statics.WIDTH / skin.getRatio()), x, y, xVel, yVel);
 		this.skin = skin;
-		this.level = level;
 		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
 		this.animations = new TextureRegion[2];
 		this.animations[0] = new TextureRegion(texture, 0, 0, 45, 45);
@@ -86,47 +78,31 @@ public class Vessel extends AbstractEntity
 			this.explosions[i] = new TextureRegion(explosion, (i * 45), 0, 45, 45);
 		}
 
-		this.drags = new ArrayDeque<>();
-
-		this.speed = ((Statics.MAX_SPEED - level.getSpeed()) / Statics.MAX_SPEED) / 2.0f;
+		this.maxShots = maxShots;
+		this.speed = speed;
 	}
 
 	@Override
 	public void update(float delta)
 	{
+		y += (yVel * delta);
+		if ((y + length) <= 0)
+		{
+			world.getUfosRemove().add(this);
+			return;
+		}
+
 		if (!exploded)
 		{
-			float deltaX = 0.0f;
-			float deltaY = 0.0f;
-
-			if (!drags.isEmpty())
-			{
-				TouchDraggedEvent event;
-				while ((event = drags.poll()) != null)
-				{
-					deltaX += (event.getScreenX() - (x + (length / 2)));
-					deltaY += ((Statics.HEIGHT - event.getScreenY()) - (y + (length / 2)));
-				}
-			}
-
-			x += ((deltaX * 0.60f) * xVel);
-			if (x < 0)
-			{
-				x = 0;
-			}
-
-			y += ((deltaY * 0.60f) * yVel);
-			if (y < 0)
-			{
-				y = 0;
-			}
-
 			time += delta;
-			if (time >= speed)
+			if (time >= speed &&  shots < maxShots)
 			{
-				float lx = (x + (length / 2));
-				float ly = (y + length);
-				world.getLasers().add(new Laser(world, LaserSkin.DEFAULT, lx, ly, 0f, Statics.HEIGHT / 3.0f));
+				float lxvel = (((world.getVessel().getX() - getX()) / 2));
+				float lx = x + (length / 2);
+				float ly = getY() - 50;
+				world.getLasers().add(new Laser(world, LaserSkin.UFO, lx, ly, lxvel, Statics.HEIGHT / -3.0f));
+
+				shots++;
 				time = 0;
 			}
 		}
@@ -141,14 +117,14 @@ public class Vessel extends AbstractEntity
 				anim++;
 				if (anim == 5)
 				{
-					draw = false;
+					world.getUfosRemove().add(this);
 				}
 			}
 		}
 
 		else
 		{
-			if (frames == 5)
+			if (frames == 10)
 			{
 				anim++;
 				frames = 0;
@@ -166,20 +142,13 @@ public class Vessel extends AbstractEntity
 
 		else
 		{
-			batch.draw(animations[anim & 0x1], x, y, length, length);
+			batch.draw(animations[anim & 0x1], x, y, length / 2.0f, length / 2.0f, length, length, 0.70f, 0.70f, 0.0f);
 		}
 	}
 
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
-		for (InputEvent event : events)
-		{
-			if (event instanceof TouchDraggedEvent)
-			{
-				drags.offer((TouchDraggedEvent) event);
-			}
-		}
 	}
 
 	public void setExploded(boolean exploded)

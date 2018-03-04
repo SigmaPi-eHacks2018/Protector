@@ -37,18 +37,15 @@ import lombok.Getter;
 public enum Background
 {
 
-	BG0("0.png", 15f),
-	BG1("1.png", 15f);
+	BG0("0.png"),
+	BG1("1.png"),
+	OVER("2.png");
 
 	@Getter
 	private final String path;
 
-	@Getter
-	private final float ratio;
-
-	Background(String image, float ratio)
+	Background(String image)
 	{
 		this.path = Statics.BGS + image;
-		this.ratio = ratio;
 	}
 }

@@ -37,11 +37,13 @@ import org.sigmapi.protector.core.interfaces.Inputable;
 import org.sigmapi.protector.core.interfaces.Renderable;
 import org.sigmapi.protector.core.interfaces.Updateable;
 import org.sigmapi.protector.core.skin.AsteroidSkin;
+import org.sigmapi.protector.core.skin.UfoSkin;
 import org.sigmapi.protector.core.skin.VesselSkin;
 import org.sigmapi.protector.core.view.impl.OverView;
 import org.sigmapi.protector.core.world.entity.AbstractEntity;
 import org.sigmapi.protector.core.world.entity.impl.Asteroid;
 import org.sigmapi.protector.core.world.entity.impl.Laser;
+import org.sigmapi.protector.core.world.entity.impl.Ufo;
 import org.sigmapi.protector.core.world.entity.impl.Vessel;
 
 import java.util.ArrayList;
@@ -59,6 +61,7 @@ public class World implements Inputable, Updateable, Renderable
 	@Getter
 	private final Protector protector;
 
+	@Getter
 	private final Vessel vessel;
 
 	@Getter
@@ -73,12 +76,19 @@ public class World implements Inputable, Updateable, Renderable
 	@Getter
 	private final List<Asteroid> asteroidsRemove;
 
+	@Getter
+	private final List<Ufo> ufos;
+
+	@Getter
+	private final List<Ufo> ufosRemove;
+
 	private final BitmapFont font;
 
-	private boolean over = false;
 	private int score = 0;
 	private float time = 0;
+	private int layers = 0;
 
+	private float speed = 0.85f;
 	private float velocity = Statics.HEIGHT / -6.0f;
 
 	public World(Protector protector)
@@ -89,6 +99,8 @@ public class World implements Inputable, Updateable, Renderable
 		this.lasersRemove = new ArrayList<>();
 		this.asteroids = new ArrayList<>();
 		this.asteroidsRemove = new ArrayList<>();
+		this.ufos = new ArrayList<>();
+		this.ufosRemove = new ArrayList<>();
 
 		this.font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
 
@@ -113,16 +125,14 @@ public class World implements Inputable, Updateable, Renderable
 		asteroids.removeAll(asteroidsRemove);
 		asteroidsRemove.clear();
 
-		if (time >= 5.0f)
+		for (Ufo ufo : ufos)
 		{
-			generateBlocks(3);
-			time = 0;
+			ufo.update(delta);
 		}
+		ufos.removeAll(ufosRemove);
+		ufosRemove.clear();
 
-		if (!over)
-		{
-			vessel.update(delta);
-		}
+		vessel.update(delta);
 
 		for (Laser laser : lasers)
 		{
@@ -131,41 +141,65 @@ public class World implements Inputable, Updateable, Renderable
 		lasers.removeAll(lasersRemove);
 		lasersRemove.clear();
 
-		if (!asteroids.isEmpty() && !lasers.isEmpty())
+		if (!vessel.isExploded() && !asteroids.isEmpty() && !lasers.isEmpty())
 		{
 			for (Asteroid asteroid : asteroids)
 			{
-				if (collides(vessel, asteroid, 2))
+				if (!asteroid.isExploded() && collides(vessel, asteroid, 15))
 				{
-					lasers.clear();
+					vessel.setExploded(true);
 					protector.getViews().push(new OverView(protector));
-					over = true;
 					return;
 				}
 			}
 
+			laserLoop:
 			for (Laser laser : lasers)
 			{
-				for (Asteroid asteroid : asteroids)
+				if (laser.getYVel() < 0)
 				{
-					if (collides(laser, asteroid, 2))
+					if (collides(vessel, laser, 2))
 					{
-						lasersRemove.add(laser);
+						vessel.setExploded(true);
+						protector.getViews().push(new OverView(protector));
+						return;
+					}
+				}
 
-						int strength = asteroid.getStrength();
-						if (strength < 250)
+				else
+				{
+					for (Ufo ufo : ufos)
+					{
+						if (!ufo.isExploded() && collides(laser, ufo, 2))
 						{
-							asteroids.remove(asteroid);
-							score += strength;
-						}
-
-						else
-						{
-							asteroid.setStrength(strength - 250);
+							lasersRemove.add(laser);
+							ufo.setExploded(true);
 							score += 250;
+							continue laserLoop;
 						}
+					}
 
-						break;
+					for (Asteroid asteroid : asteroids)
+					{
+						if (!asteroid.isExploded() && collides(laser, asteroid, 2))
+						{
+							lasersRemove.add(laser);
+
+							int strength = asteroid.getStrength();
+							if (strength < 750)
+							{
+								asteroid.setExploded(true);
+								score += strength;
+							}
+
+							else
+							{
+								asteroid.setStrength(strength - 750);
+								score += 250;
+							}
+
+							continue laserLoop;
+						}
 					}
 				}
 			}
@@ -173,24 +207,47 @@ public class World implements Inputable, Updateable, Renderable
 			lasers.removeAll(lasersRemove);
 			lasersRemove.clear();
 		}
+
+		if (time >= 5.0f)
+		{
+			generateBlocks((layers / 10) + 1);
+			generateUfos((layers / 10) + 1);
+			time = 0;
+			layers++;
+
+			if (layers / 10 == 0)
+			{
+				velocity += 0.01f;
+				speed -= 0.05f;
+			}
+		}
 	}
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		vessel.render(batch);
+		for (Asteroid asteroid : asteroids)
+		{
+			asteroid.render(batch);
+		}
+
+		for (Ufo ufo : ufos)
+		{
+			ufo.render(batch);
+		}
 
 		for (Laser laser : lasers)
 		{
 			laser.render(batch);
 		}
 
-		for (Asteroid asteroid : asteroids)
+		if (vessel.isDraw())
 		{
-			asteroid.render(batch);
+			vessel.render(batch);
 		}
 
-		font.draw(batch, String.valueOf(score), ((Statics.WIDTH / 2.0f) - (10 * Font.GAME.getRatio())), (Statics.HEIGHT - 50));
+		font.draw(batch, "Score: " + String.valueOf(score), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (5 * Font.GAME.getRatio())));
+		font.draw(batch, "Wave: " + String.valueOf((layers / 10) + 1), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (20 * Font.GAME.getRatio())));
 	}
 
 	@Override
@@ -228,6 +285,29 @@ public class World implements Inputable, Updateable, Renderable
 		}
 
 		asteroids.addAll(toAdd);
+	}
+
+	private void generateUfos(int wave)
+	{
+		int shots = (wave >= 5) ? 2 : 3;
+		float x = Statics.LENGTH * Statics.nextInt(5);
+		float y = Statics.HEIGHT + (Statics.LENGTH * Statics.nextInt(3));
+		Ufo ufo = new Ufo(this, UfoSkin.get(), x, y, 0.0f, velocity, shots, speed);
+
+		ufos.add(ufo);
+
+		if (wave >= 5)
+		{
+			Ufo ufo2;
+			do
+			{
+				x = Statics.LENGTH * Statics.nextInt(5);
+				y = Statics.HEIGHT + (Statics.LENGTH * Statics.nextInt(3));
+				ufo2 = new Ufo(this, UfoSkin.get(), x, y, 0.0f, velocity, shots, speed);
+			} while (collides(ufo, ufo2, 2));
+
+			ufos.add(ufo2);
+		}
 	}
 
 	private static boolean collides(AbstractEntity a, AbstractEntity b, float gap)
