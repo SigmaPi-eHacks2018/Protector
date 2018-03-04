@@ -24,29 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core;
+package org.sigmapi.protector.core.buttons;
+
+import org.sigmapi.protector.core.Statics;
 
 import lombok.Getter;
-import lombok.Setter;
+
 
 /**
  * Created by Kyle Fricilone on Mar 03, 2018.
  */
-public class Level
+public enum Button
 {
 
-	@Getter
-	@Setter
-	private int power;
+	PLAY("0.png"),
+	HANGER("1.png"),
+	ABOUT("2.png"),
+	VESSELS("3.png"),
+	LASERS("4.png"),
+	UPGRADES("5.png"),
+	BUY("6.png"),
+	HOME("7.png");
 
 	@Getter
-	@Setter
-	private float speed;
+	private final String path;
 
-	public Level()
+	Button(String image)
 	{
-		this.power = 0;
-		this.speed = 45.0f;
+		this.path = Statics.BUTTONS + image;
 	}
-
 }

@@ -28,6 +28,7 @@ package org.sigmapi.protector.core;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,6 +41,7 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.input.InputManager;
+import org.sigmapi.protector.core.local.Profile;
 import org.sigmapi.protector.core.view.AbstractView;
 import org.sigmapi.protector.core.view.ViewManager;
 import org.sigmapi.protector.core.view.impl.LoadView;
@@ -71,9 +73,11 @@ public class Protector extends ApplicationAdapter
 	private State state;
 
 	@Getter
-	private Level level;
+	private Profile profile;
 
 	private BitmapFont font;
+
+	private Preferences preferences;
 
 	@Override
 	public void create()
@@ -84,10 +88,15 @@ public class Protector extends ApplicationAdapter
 		views = new ViewManager();
 		inputs = new InputManager();
 		state = new State();
-		level = new Level();
+		profile = new Profile();
+		preferences = Gdx.app.getPreferences("Protector");
+		//profile.save(preferences);
+		profile.load(preferences);
 
 		profiler.enable();
 		Gdx.input.setInputProcessor(inputs);
+
+		Gdx.app.getPreferences("");
 
 		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(assets.getFileHandleResolver()));
 		assets.setLoader(BitmapFont.class, ".otf", new FreetypeFontLoader(assets.getFileHandleResolver()));
@@ -110,6 +119,8 @@ public class Protector extends ApplicationAdapter
 			view.update(delta);
 		}
 
+		profile.save(preferences);
+
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
@@ -120,7 +131,7 @@ public class Protector extends ApplicationAdapter
 
 		if (state.isLoaded())
 		{
-			drawDebug();
+		//	drawDebug();
 		}
 
 		batch.end();

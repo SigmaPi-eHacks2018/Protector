@@ -33,6 +33,7 @@ import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.background.Background;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.Statics;
+import org.sigmapi.protector.core.input.impl.TouchDownEvent;
 import org.sigmapi.protector.core.view.AbstractView;
 import org.sigmapi.protector.core.world.World;
 
@@ -48,6 +49,11 @@ public class GameView extends AbstractView
 
 	private final Texture bg0;
 	private final Texture bg1;
+	private final Texture pause;
+
+	private float xPause;
+	private float yPause;
+	private float length;
 
 	private float y0;
 	private float y1;
@@ -59,6 +65,11 @@ public class GameView extends AbstractView
 
 		bg0 = protector.getAssets().get(Background.BG0.getPath(), Texture.class);
 		bg1 = protector.getAssets().get(Background.BG1.getPath(), Texture.class);
+		pause = protector.getAssets().get(Statics.PAUSE_TEXTURES + "1.png", Texture.class);
+
+		length = Statics.WIDTH * 0.1f;
+		xPause = Statics.WIDTH - length;
+		yPause = Statics.HEIGHT - length;
 
 		y0 = 0;
 		y1 = Statics.HEIGHT;
@@ -67,6 +78,22 @@ public class GameView extends AbstractView
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
+		for (InputEvent event : events)
+		{
+			if (event instanceof TouchDownEvent)
+			{
+				TouchDownEvent td = (TouchDownEvent) event;
+				int sx = td.getScreenX();
+				int sy = Statics.HEIGHT - td.getScreenY();
+				float len = Statics.WIDTH * 0.25f;
+				if ((sx >= (Statics.WIDTH - len) && sx <= Statics.WIDTH)
+						&& (sy >= (Statics.HEIGHT - len) && sy <= Statics.HEIGHT))
+				{
+					protector.getViews().push(new PauseView(protector));
+					protector.getState().setPaused(true);
+				}
+			}
+		}
 		world.accept(events);
 	}
 
@@ -98,6 +125,7 @@ public class GameView extends AbstractView
 		batch.draw(bg0, 0, y0, Statics.WIDTH, Statics.HEIGHT + 1);
 		batch.draw(bg1, 0, y1, Statics.WIDTH, Statics.HEIGHT + 1);
 		world.render(batch);
+		batch.draw(pause, xPause, yPause, length, length);
 	}
 
 	@Override

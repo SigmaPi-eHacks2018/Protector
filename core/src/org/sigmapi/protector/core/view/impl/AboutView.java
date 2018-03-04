@@ -42,36 +42,31 @@ import org.sigmapi.protector.core.view.AbstractView;
 import java.util.Deque;
 
 /**
- * Created by Kyle Fricilone on Mar 02, 2018.
+ * Created by Kyle Fricilone on Mar 03, 2018.
  */
-public class MenuView extends AbstractView
+public class AboutView extends AbstractView
 {
 	private final Texture bg0;
 	private final Texture bg1;
 	private final Texture logo;
 
-	private final Texture play;
-	private final Texture hanger;
-	private final Texture about;
+	private final Texture home;
 
 	private final BitmapFont font;
 
 	private float width;
 	private float height;
 
-	private float xPlay;
-	private float yPlay;
+	private float xHome;
+	private float yHome;
 
-	private float xHanger;
-	private float yHanger;
-
-	private float xAbout;
-	private float yAbout;
+	private float xText;
+	private float yText;
 
 	private float y0;
 	private float y1;
 
-	public MenuView(Protector protector)
+	public AboutView(Protector protector)
 	{
 		super(protector);
 
@@ -79,26 +74,21 @@ public class MenuView extends AbstractView
 		bg1 = protector.getAssets().get(Background.BG1.getPath(), Texture.class);
 		logo = protector.getAssets().get(Statics.LOGO, Texture.class);
 
-		font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
+		font = protector.getAssets().get(Font.ABOUT.getPath(), BitmapFont.class);
 
-		play = protector.getAssets().get(Button.PLAY.getPath(), Texture.class);
-		hanger = protector.getAssets().get(Button.HANGER.getPath(), Texture.class);
-		about = protector.getAssets().get(Button.ABOUT.getPath(), Texture.class);
+		home = protector.getAssets().get(Button.HOME.getPath(), Texture.class);
 
-		height = Statics.HEIGHT * 0.1f;
-		width =  Statics.WIDTH * 0.5f;
+		width = Statics.WIDTH / 2.0f;
+		height = (home.getWidth() / width) * home.getHeight();
 
 		float x = (Statics.WIDTH / 2.0f) - (width / 2.0f);
-		xPlay = x;
-		xHanger = x;
-		xAbout = x;
+		xHome = x;
+		xText = x;
 
 		float y = (Statics.HEIGHT / 2.0f);
-		yPlay = y;
+		yHome = y;
 		y -= (1.5f * height);
-		yHanger = y;
-		y -= (1.5f * height);
-		yAbout = y;
+		yText = y;
 
 		y0 = 0;
 		y1 = Statics.HEIGHT;
@@ -115,25 +105,11 @@ public class MenuView extends AbstractView
 				int sx = td.getScreenX();
 				int sy = Statics.HEIGHT - td.getScreenY();
 
-				if ((sx >= xPlay && sx <= (xPlay + width))
-						&& (sy >= yPlay && sy <= (yPlay + height)))
+				if ((sx >= xHome && sx <= (xHome + width))
+						&& (sy >= yHome && sy <= (yHome + height)))
 				{
 					protector.getViews().pop();
-					protector.getViews().push(new GameView(protector));
-				}
-
-				else if ((sx >= xHanger && sx <= (xHanger + width))
-						&& (sy >= yHanger && sy <= (yHanger + height)))
-				{
-					protector.getViews().pop();
-					protector.getViews().push(new HangerView(protector));
-				}
-
-				else if ((sx >= xAbout && sx <= (xAbout + width))
-						&& (sy >= yAbout && sy <= (yAbout + height)))
-				{
-					protector.getViews().pop();
-					protector.getViews().push(new AboutView(protector));
+					protector.getViews().push(new MenuView(protector));
 				}
 			}
 		}
@@ -163,15 +139,17 @@ public class MenuView extends AbstractView
 		batch.draw(bg1, 0, y1, Statics.WIDTH, Statics.HEIGHT + 1);
 		batch.draw(logo, 0, (Statics.HEIGHT * 0.15f), Statics.WIDTH, Statics.HEIGHT);
 
-		batch.draw(play, xPlay, yPlay, width, height);
-		batch.draw(hanger, xHanger, yHanger, width, height);
-		batch.draw(about, xAbout, yAbout, width, height);
-
-		font.draw(batch, String.valueOf(protector.getProfile().getPoints()), Statics.WIDTH / 2.0f, Statics.HEIGHT * 0.70f);
+		batch.draw(home, xHome, yHome, width, height);
+		font.draw(batch, MESSAGE, xText, yText);
 	}
 
 	@Override
 	public void dispose()
 	{
 	}
+
+	private static final String MESSAGE =
+			"Copyright 2018 SigmaPi-eHacks2018\n" +
+			"Released under the BSD-2 License\n" +
+			"Uses the LibGDX Project";
 }

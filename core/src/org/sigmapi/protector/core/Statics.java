@@ -39,8 +39,10 @@ public class Statics
 	public static final int HEIGHT = Gdx.graphics.getHeight();
 	public static final int WIDTH = Gdx.graphics.getWidth();
 
+	public static final int BASE_POWER = 10;
+	public static final int BASE_SPEED = 10;
 	public static final float MAX_SPEED = 60.0f;
-	public static final int MAX_POWER = 200;
+	public static final int MAX_POWER = 600;
 
 	public static final float BG_VEL = -100f;
 
@@ -57,10 +59,11 @@ public class Statics
 	public static final String BGS = "textures/backgrounds/";
 
 	public static final String LOAD_TEXURES = "textures/load/";
-	public static final String MENU_TEXURES = "textures/menu/";
-
+	public static final String BUTTONS = "textures/buttons/";
+	public static final String PAUSE_TEXTURES = "textures/pause/";
 	public static final String GAME_TEXURES = "textures/game/";
 	public static final String GAME_EXPLOSION = GAME_TEXURES + "0.png";
+	public static final String GAME_SHIELD = GAME_TEXURES + "shields/0.png";
 	public static final String GAME_ASTEROIDS = GAME_TEXURES + "asteroids/";
 	public static final String GAME_LASERS = GAME_TEXURES + "lasers/";
 	public static final String GAME_UFOS = GAME_TEXURES + "ufos/";
@@ -76,6 +79,11 @@ public class Statics
 
 	private static final int[] DIST = { 1, 2, 3, 4, 5, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
 	//public static final String s = "1234566777788888888888888888888999999999999999999999999999999999999999";
+
+	public static int getMax(int wave)
+	{
+		return 10_000 + (int) (1_500 * (Math.pow(wave, 1.15)));
+	}
 
 	public static int nextStrength(int max)
 	{

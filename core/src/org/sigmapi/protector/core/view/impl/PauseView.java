@@ -26,10 +26,13 @@
 
 package org.sigmapi.protector.core.view.impl;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import org.sigmapi.protector.core.Protector;
+import org.sigmapi.protector.core.Statics;
 import org.sigmapi.protector.core.input.InputEvent;
+import org.sigmapi.protector.core.input.impl.TouchDownEvent;
 import org.sigmapi.protector.core.view.AbstractView;
 
 import java.util.Deque;
@@ -40,15 +43,25 @@ import java.util.Deque;
 public class PauseView extends AbstractView
 {
 
+	private final Texture overlay;
+
 	public PauseView(Protector protector)
 	{
 		super(protector);
+		this.overlay = protector.getAssets().get(Statics.PAUSE_TEXTURES + "0.png", Texture.class);
 	}
 
 	@Override
 	public void accept(Deque<InputEvent> events)
 	{
-
+		for (InputEvent event : events)
+		{
+			if (event instanceof TouchDownEvent)
+			{
+				protector.getViews().pop();
+				protector.getState().setPaused(false);
+			}
+		}
 	}
 
 	@Override
@@ -60,7 +73,7 @@ public class PauseView extends AbstractView
 	@Override
 	public void render(SpriteBatch batch)
 	{
-
+		batch.draw(overlay, 0, 0);
 	}
 
 	@Override

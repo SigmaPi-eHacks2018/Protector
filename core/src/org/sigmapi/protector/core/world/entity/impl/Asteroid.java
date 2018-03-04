@@ -59,6 +59,7 @@ public class Asteroid extends AbstractEntity
 	@Getter
 	@Setter
 	private int strength;
+	private final int maxStrength;
 	private float color;
 
 	@Getter
@@ -67,7 +68,7 @@ public class Asteroid extends AbstractEntity
 	private int frames = 0;
 	private int anim = 0;
 
-	public Asteroid(World world, AsteroidSkin skin, float x, float y, float xVel, float yVel)
+	public Asteroid(World world, AsteroidSkin skin, float x, float y, float xVel, float yVel, int strength, int maxStrength)
 	{
 		super(world, (Statics.WIDTH / skin.getRatio()), x, y, xVel, yVel);
 		this.skin = skin;
@@ -80,7 +81,8 @@ public class Asteroid extends AbstractEntity
 			this.explosions[i] = new TextureRegion(explosion, (i * 45), 0, 45, 45);
 		}
 
-		this.strength = Statics.nextStrength(Statics.MAX_STRENGTH);
+		this.strength = strength;
+		this.maxStrength = maxStrength;
 	}
 
 	@Override
@@ -96,7 +98,7 @@ public class Asteroid extends AbstractEntity
 
 		if (!exploded)
 		{
-			float cb = strength / (float) Statics.MAX_STRENGTH;
+			float cb = strength / (float) maxStrength;
 			if (cb >= 1.0f)
 			{
 				color = Color.toFloatBits(1.0f, 0.0f, 1.0f - (2.0f - cb), 1.0f);

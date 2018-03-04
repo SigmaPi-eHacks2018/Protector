@@ -97,9 +97,9 @@ public class Ufo extends AbstractEntity
 			time += delta;
 			if (time >= speed &&  shots < maxShots)
 			{
-				float lxvel = (((world.getVessel().getX() - getX()) / 2));
 				float lx = x + (length / 2);
 				float ly = getY() - 50;
+				float lxvel = (((world.getVessel().getX() - lx) / 2));
 				world.getLasers().add(new Laser(world, LaserSkin.UFO, lx, ly, lxvel, Statics.HEIGHT / -3.0f));
 
 				shots++;

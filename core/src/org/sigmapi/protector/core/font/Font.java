@@ -38,11 +38,8 @@ public enum Font
 {
 
 	DEBUG("debug.otf", 26.0f),
-	LOAD("load.otf", 15f),
-	MENU("menu.otf", 15f),
+	ABOUT("about.otf", 20.0f),
 	GAME("game.otf", 10.0f),
-	PAUSE("pause.otf", 15f),
-	OVER("over.otf", 15f),
 	ASTEROID("asteroid.otf", 20.0f);
 
 	@Getter

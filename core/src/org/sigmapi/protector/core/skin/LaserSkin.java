@@ -38,7 +38,9 @@ public enum LaserSkin
 
 	DEFAULT("0.png", 35.0f),
 	L100("1.png", 25.0f),
-	UFO("2.png", 25.0f);
+	UFO("2.png", 25.0f),
+	B("3.png", 25.0f),
+	TREX("4.png", 25.0f);
 
 	@Getter
 	private final String path;

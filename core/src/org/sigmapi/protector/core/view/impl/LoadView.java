@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoa
 
 import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.background.Background;
+import org.sigmapi.protector.core.buttons.Button;
 import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.skin.AsteroidSkin;
@@ -93,6 +94,14 @@ public class LoadView extends AbstractView
 
 
 		assets.load(Statics.GAME_EXPLOSION, Texture.class);
+		assets.load(Statics.GAME_SHIELD, Texture.class);
+		assets.load(Statics.PAUSE_TEXTURES + "0.png", Texture.class);
+		assets.load(Statics.PAUSE_TEXTURES + "1.png", Texture.class);
+		for (Button button : Button.values())
+		{
+			assets.load(button.getPath(), Texture.class);
+		}
+
 		for (AsteroidSkin skin : AsteroidSkin.values())
 		{
 			assets.load(skin.getPath(), Texture.class);
@@ -158,9 +167,9 @@ public class LoadView extends AbstractView
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		batch.draw(bg0, 0, y0, Statics.WIDTH, Statics.HEIGHT + 1);
-		batch.draw(bg1, 0, y1, Statics.WIDTH, Statics.HEIGHT + 1);
-		batch.draw(logo, 0, 0, Statics.WIDTH, Statics.HEIGHT);
+		batch.draw(bg0, 0, y0, Statics.WIDTH, Statics.HEIGHT + 2);
+		batch.draw(bg1, 0, y1, Statics.WIDTH, Statics.HEIGHT + 2);
+		batch.draw(logo, 0, (Statics.HEIGHT * 0.15f), Statics.WIDTH, Statics.HEIGHT);
 		batch.draw(box, ((Statics.WIDTH / 2.0f) - (width / 2)) - 5, height, width + 10, box.getHeight());
 		batch.draw(bar, ((Statics.WIDTH / 2.0f) - (width / 2)), height + 5, (percent * width), bar.getHeight());
 	}

@@ -36,6 +36,7 @@ import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.interfaces.Inputable;
 import org.sigmapi.protector.core.interfaces.Renderable;
 import org.sigmapi.protector.core.interfaces.Updateable;
+import org.sigmapi.protector.core.local.Profile;
 import org.sigmapi.protector.core.skin.AsteroidSkin;
 import org.sigmapi.protector.core.skin.UfoSkin;
 import org.sigmapi.protector.core.skin.VesselSkin;
@@ -51,6 +52,8 @@ import java.util.Deque;
 import java.util.List;
 
 import lombok.Getter;
+
+import static java.lang.Math.floor;
 
 /**
  * Created by Kyle Fricilone on Mar 02, 2018.
@@ -87,9 +90,12 @@ public class World implements Inputable, Updateable, Renderable
 	private int score = 0;
 	private float time = 0;
 	private int layers = 0;
+	private int wave = 1;
 
 	private float speed = 0.85f;
 	private float velocity = Statics.HEIGHT / -6.0f;
+
+	private int power = 100;
 
 	public World(Protector protector)
 	{
@@ -104,12 +110,15 @@ public class World implements Inputable, Updateable, Renderable
 
 		this.font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
 
-		this.vessel = new Vessel(this, VesselSkin.V2, protector.getLevel());
+		this.vessel = new Vessel(this, VesselSkin.values()[protector.getProfile().getVessel()], protector.getProfile());
+
+		this.power *= protector.getProfile().getPower();
 
 		int w = Statics.WIDTH / 5;
+		int max = Statics.getMax(wave);
 		for (int i = 0; i < 5; i++)
 		{
-			asteroids.add(new Asteroid(this, AsteroidSkin.get(), w * i, Statics.HEIGHT, 0.0f, velocity));
+			asteroids.add(new Asteroid(this, AsteroidSkin.get(), w * i, Statics.HEIGHT, 0.0f, velocity, Statics.nextStrength(max), max));
 		}
 	}
 
@@ -147,9 +156,14 @@ public class World implements Inputable, Updateable, Renderable
 			{
 				if (!asteroid.isExploded() && collides(vessel, asteroid, 15))
 				{
-					vessel.setExploded(true);
-					protector.getViews().push(new OverView(protector));
-					return;
+					vessel.hit();
+					if (vessel.isExploded())
+					{
+						Profile profile = protector.getProfile();
+						profile.setPoints(profile.getPoints() + (int) floor(score / 10_000f));
+						protector.getViews().push(new OverView(protector));
+						return;
+					}
 				}
 			}
 
@@ -160,9 +174,14 @@ public class World implements Inputable, Updateable, Renderable
 				{
 					if (collides(vessel, laser, 2))
 					{
-						vessel.setExploded(true);
-						protector.getViews().push(new OverView(protector));
-						return;
+						vessel.hit();
+						if (vessel.isExploded())
+						{
+							Profile profile = protector.getProfile();
+							profile.setPoints(profile.getPoints() + (int) floor(score / 10_000f));
+							protector.getViews().push(new OverView(protector));
+							return;
+						}
 					}
 				}
 
@@ -174,7 +193,7 @@ public class World implements Inputable, Updateable, Renderable
 						{
 							lasersRemove.add(laser);
 							ufo.setExploded(true);
-							score += 250;
+							score += 10_000;
 							continue laserLoop;
 						}
 					}
@@ -186,7 +205,7 @@ public class World implements Inputable, Updateable, Renderable
 							lasersRemove.add(laser);
 
 							int strength = asteroid.getStrength();
-							if (strength < 750)
+							if (strength < power)
 							{
 								asteroid.setExploded(true);
 								score += strength;
@@ -194,8 +213,8 @@ public class World implements Inputable, Updateable, Renderable
 
 							else
 							{
-								asteroid.setStrength(strength - 750);
-								score += 250;
+								asteroid.setStrength(strength - power);
+								score += power;
 							}
 
 							continue laserLoop;
@@ -210,12 +229,13 @@ public class World implements Inputable, Updateable, Renderable
 
 		if (time >= 5.0f)
 		{
-			generateBlocks((layers / 10) + 1);
-			generateUfos((layers / 10) + 1);
-			time = 0;
 			layers++;
+			wave = (layers / 5) + 1;
+			generateBlocks();
+			generateUfos();
+			time = 0;
 
-			if (layers / 10 == 0)
+			if (layers % 5 == 0)
 			{
 				velocity += 0.01f;
 				speed -= 0.05f;
@@ -246,8 +266,8 @@ public class World implements Inputable, Updateable, Renderable
 			vessel.render(batch);
 		}
 
-		font.draw(batch, "Score: " + String.valueOf(score), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (5 * Font.GAME.getRatio())));
-		font.draw(batch, "Wave: " + String.valueOf((layers / 10) + 1), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (20 * Font.GAME.getRatio())));
+		font.draw(batch, "Score: " + String.valueOf((int) floor(score / 10_000f)), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (5 * Font.GAME.getRatio())));
+		font.draw(batch, "Wave: " + String.valueOf(wave), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (20 * Font.GAME.getRatio())));
 	}
 
 	@Override
@@ -256,23 +276,53 @@ public class World implements Inputable, Updateable, Renderable
 		vessel.accept(events);
 	}
 
-	private void generateBlocks(int wave)
+	private void generateBlocks()
 	{
+		int max = Statics.getMax(wave);
+
+		int rows = 3;
+		int iterations = 1;
+
+		if (wave > 20)
+		{
+			rows++;
+		}
+
+		if (wave > 5)
+		{
+			iterations++;
+		}
+
+		if (wave > 10)
+		{
+			iterations++;
+		}
+
+		if (wave > 20)
+		{
+			iterations++;
+		}
+
+		if (wave > 30)
+		{
+			iterations++;
+		}
+
 		List<Asteroid> toAdd = new ArrayList<>();
-		for (int i = 0; i < wave; i++)
+		for (int i = 0; i < iterations; i++)
 		{
 			patternLoop:
 			for (int j = 0; j < 5; j++)
 			{
 				float x = Statics.LENGTH * Statics.nextInt(5);
-				float y = Statics.HEIGHT + (Statics.LENGTH * Statics.nextInt(3));
-				Asteroid newAsteroid = new Asteroid(this, AsteroidSkin.get(), x, y, 0.0f, velocity);
+				float y = Statics.HEIGHT + (Statics.LENGTH * Statics.nextInt(rows));
+				Asteroid newAsteroid = new Asteroid(this, AsteroidSkin.get(), x, y, 0.0f, velocity, Statics.nextStrength(max), max);
 
 				for (Asteroid asteroid : toAdd)
 				{
 					if (collides(newAsteroid, asteroid, 5))
 					{
-						if (asteroid.getStrength() < Statics.MAX_STRENGTH)
+						if (asteroid.getStrength() < max)
 						{
 							asteroid.setStrength(asteroid.getStrength() + newAsteroid.getStrength());
 						}
@@ -287,7 +337,7 @@ public class World implements Inputable, Updateable, Renderable
 		asteroids.addAll(toAdd);
 	}
 
-	private void generateUfos(int wave)
+	private void generateUfos()
 	{
 		int shots = (wave >= 5) ? 2 : 3;
 		float x = Statics.LENGTH * Statics.nextInt(5);
