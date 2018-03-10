@@ -29,8 +29,10 @@ package org.sigmapi.protector.core.world.entity.impl;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Pools;
 
 import org.sigmapi.protector.core.Statics;
 import org.sigmapi.protector.core.font.Font;
@@ -55,6 +57,7 @@ public class Asteroid extends AbstractEntity
 	private final Texture explosion;
 	private final TextureRegion[] explosions;
 	private final BitmapFont font;
+	private final GlyphLayout glyph;
 
 	@Getter
 	@Setter
@@ -75,6 +78,7 @@ public class Asteroid extends AbstractEntity
 		this.texture = world.getProtector().getAssets().get(skin.getPath(), Texture.class);
 		this.explosion = world.getProtector().getAssets().get(Statics.GAME_EXPLOSION, Texture.class);
 		this.font = world.getProtector().getAssets().get(Font.ASTEROID.getPath(), BitmapFont.class);
+		this.glyph = Pools.obtain(GlyphLayout.class);
 		this.explosions = new TextureRegion[5];
 		for (int i = 0; i < explosions.length; i++)
 		{
@@ -141,11 +145,13 @@ public class Asteroid extends AbstractEntity
 
 		else
 		{
+			glyph.setText(font, Statics.format(strength));
+
 			float prevColor = batch.getPackedColor();
 			batch.setColor(color);
 			batch.draw(texture, x, y, length, length);
 			batch.setColor(prevColor);
-			font.draw(batch, String.valueOf(strength), (x + (length / 2)) - (Font.ASTEROID.getRatio() * 1.5f), (y + (length / 2)) + 25);
+			font.draw(batch, glyph, (x + (length / 2)) - (glyph.width / 2), (y + (length / 2)) + 25);
 		}
 	}
 

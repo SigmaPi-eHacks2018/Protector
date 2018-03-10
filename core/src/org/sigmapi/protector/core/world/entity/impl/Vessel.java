@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import org.sigmapi.protector.core.local.Profile;
+import org.sigmapi.protector.core.Profile;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.input.impl.TouchDraggedEvent;
 import org.sigmapi.protector.core.skin.LaserSkin;
@@ -130,7 +130,7 @@ public class Vessel extends AbstractEntity
 				while ((event = drags.poll()) != null)
 				{
 					deltaX += (event.getScreenX() - (x + (length / 2)));
-					deltaY += ((Statics.HEIGHT - event.getScreenY()) - (y + (length / 2)));
+					deltaY += ((Statics.HEIGHT - event.getScreenY()) - y);
 				}
 			}
 

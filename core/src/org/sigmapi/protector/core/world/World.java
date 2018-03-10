@@ -27,7 +27,9 @@
 package org.sigmapi.protector.core.world;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Pools;
 
 import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.Statics;
@@ -36,7 +38,7 @@ import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.interfaces.Inputable;
 import org.sigmapi.protector.core.interfaces.Renderable;
 import org.sigmapi.protector.core.interfaces.Updateable;
-import org.sigmapi.protector.core.local.Profile;
+import org.sigmapi.protector.core.Profile;
 import org.sigmapi.protector.core.skin.AsteroidSkin;
 import org.sigmapi.protector.core.skin.UfoSkin;
 import org.sigmapi.protector.core.skin.VesselSkin;
@@ -86,6 +88,7 @@ public class World implements Inputable, Updateable, Renderable
 	private final List<Ufo> ufosRemove;
 
 	private final BitmapFont font;
+	private final GlyphLayout glyph;
 
 	private int score = 0;
 	private float time = 0;
@@ -109,6 +112,7 @@ public class World implements Inputable, Updateable, Renderable
 		this.ufosRemove = new ArrayList<>();
 
 		this.font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
+		this.glyph = Pools.obtain(GlyphLayout.class);
 
 		this.vessel = new Vessel(this, VesselSkin.values()[protector.getProfile().getVessel()], protector.getProfile());
 
@@ -266,8 +270,11 @@ public class World implements Inputable, Updateable, Renderable
 			vessel.render(batch);
 		}
 
-		font.draw(batch, "Score: " + String.valueOf((int) floor(score / 10_000f)), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (5 * Font.GAME.getRatio())));
-		font.draw(batch, "Wave: " + String.valueOf(wave), ((Statics.WIDTH / 2.0f) - (18 * Font.GAME.getRatio())), (Statics.HEIGHT - (20 * Font.GAME.getRatio())));
+		glyph.setText(font, "Score: " + Statics.format(score));
+		font.draw(batch, glyph, ((Statics.WIDTH / 2.0f) - (glyph.width / 2)), (Statics.HEIGHT - (5 * Font.GAME.getRatio())));
+
+		glyph.setText(font, "Wave: " + String.valueOf(wave));
+		font.draw(batch, glyph, ((Statics.WIDTH / 2.0f) - (glyph.width / 2)), (Statics.HEIGHT - (20 * Font.GAME.getRatio())));
 	}
 
 	@Override

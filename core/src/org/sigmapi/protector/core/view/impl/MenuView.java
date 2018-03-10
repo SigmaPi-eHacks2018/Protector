@@ -28,7 +28,9 @@ package org.sigmapi.protector.core.view.impl;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Pools;
 
 import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.Statics;
@@ -55,6 +57,7 @@ public class MenuView extends AbstractView
 	private final Texture about;
 
 	private final BitmapFont font;
+	private final GlyphLayout glyph;
 
 	private float width;
 	private float height;
@@ -80,6 +83,7 @@ public class MenuView extends AbstractView
 		logo = protector.getAssets().get(Statics.LOGO, Texture.class);
 
 		font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
+		glyph = Pools.obtain(GlyphLayout.class);
 
 		play = protector.getAssets().get(Button.PLAY.getPath(), Texture.class);
 		hanger = protector.getAssets().get(Button.HANGER.getPath(), Texture.class);
@@ -167,7 +171,8 @@ public class MenuView extends AbstractView
 		batch.draw(hanger, xHanger, yHanger, width, height);
 		batch.draw(about, xAbout, yAbout, width, height);
 
-		font.draw(batch, String.valueOf(protector.getProfile().getPoints()), Statics.WIDTH / 2.0f, Statics.HEIGHT * 0.70f);
+		glyph.setText(font, Statics.format(protector.getProfile().getPoints()));
+		font.draw(batch, glyph, (Statics.WIDTH / 2.0f) - (glyph.width / 2), Statics.HEIGHT * 0.70f);
 	}
 
 	@Override

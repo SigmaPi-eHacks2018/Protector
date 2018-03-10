@@ -28,6 +28,7 @@ package org.sigmapi.protector.core;
 
 import com.badlogic.gdx.Gdx;
 
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -40,13 +41,14 @@ public class Statics
 	public static final int WIDTH = Gdx.graphics.getWidth();
 
 	public static final int BASE_POWER = 10;
+	public static final int MAX_POWER = 600;
+
 	public static final int BASE_SPEED = 10;
 	public static final float MAX_SPEED = 60.0f;
-	public static final int MAX_POWER = 600;
 
 	public static final float BG_VEL = -100f;
 
-	public static final int MAX_STRENGTH = 10_000;
+	public static final int BASE_STRENGTH = 5_000;
 
 	public static final float LENGTH = WIDTH / 5.0f;
 
@@ -69,6 +71,42 @@ public class Statics
 	public static final String GAME_UFOS = GAME_TEXURES + "ufos/";
 	public static final String GAME_VESSELS = GAME_TEXURES + "vessels/";
 
+	public static String format(long strength)
+	{
+		String formatted;
+		double minimized;
+
+		if (strength >= 1_000_000_000_000L)
+		{
+			minimized = strength / 1_000_000_000_000D;
+			formatted = String.format(Locale.ENGLISH, "%.2f", minimized) + "T";
+		}
+
+		else if (strength >= 1_000_000_000)
+		{
+			minimized = strength / 1_000_000_000D;
+			formatted = String.format(Locale.ENGLISH, "%.2f", minimized) + "B";
+		}
+
+		else if (strength >= 1_000_000)
+		{
+			minimized = strength / 1_000_000D;
+			formatted = String.format(Locale.ENGLISH, "%.2f", minimized) + "M";
+		}
+
+		else if (strength >= 1_000)
+		{
+			minimized = strength / 1_000D;
+			formatted = String.format(Locale.ENGLISH, "%.2f", minimized) + "K";
+		}
+
+		else
+		{
+			formatted = String.valueOf(strength);
+		}
+
+		return formatted;
+	}
 
 	private static final Random RAND = new Random();
 
@@ -82,7 +120,7 @@ public class Statics
 
 	public static int getMax(int wave)
 	{
-		return 10_000 + (int) (1_500 * (Math.pow(wave, 1.15)));
+		return BASE_STRENGTH + (int) (1_500 * (Math.pow(wave, 1.15)));
 	}
 
 	public static int nextStrength(int max)

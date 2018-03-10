@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sigmapi.protector.core.local;
+package org.sigmapi.protector.core;
 
 import com.badlogic.gdx.Preferences;
 

@@ -41,7 +41,6 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import org.sigmapi.protector.core.font.Font;
 import org.sigmapi.protector.core.input.InputEvent;
 import org.sigmapi.protector.core.input.InputManager;
-import org.sigmapi.protector.core.local.Profile;
 import org.sigmapi.protector.core.view.AbstractView;
 import org.sigmapi.protector.core.view.ViewManager;
 import org.sigmapi.protector.core.view.impl.LoadView;
@@ -129,10 +128,10 @@ public class Protector extends ApplicationAdapter
 			it.next().render(batch);
 		}
 
-		if (state.isLoaded())
+		/*if (state.isLoaded())
 		{
-		//	drawDebug();
-		}
+			drawDebug();
+		}*/
 
 		batch.end();
 	}
@@ -156,20 +155,27 @@ public class Protector extends ApplicationAdapter
 			font = assets.get(Font.DEBUG.getPath(), BitmapFont.class);
 		}
 
-		font.setColor(1, 1, 1, 1);
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 48, Statics.HEIGHT - 48);
-		font.draw(batch, "GL Calls: " + profiler.getCalls(), 48, Statics.HEIGHT - 108);
-		font.draw(batch, "Draw Calls: " + profiler.getDrawCalls(), 48, Statics.HEIGHT - 168);
-		font.draw(batch, "Shader Switches: " + profiler.getShaderSwitches(), 48, Statics.HEIGHT - 228);
-		font.draw(batch, "Texture Bindings: " + profiler.getTextureBindings(), 48, Statics.HEIGHT - 288);
-		font.draw(batch, "Vertices: " + profiler.getVertexCount().total, 48, Statics.HEIGHT - 348);
+		float y = Statics.HEIGHT - 48;
 
-		int h = Statics.HEIGHT - 418;
+		font.setColor(1, 1, 1, 1);
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 48, y);
+		y -= (font.getLineHeight() + 15);
+		font.draw(batch, "GL Calls: " + profiler.getCalls(), 48, y);
+		y -= (font.getLineHeight() + 15);
+		font.draw(batch, "Draw Calls: " + profiler.getDrawCalls(), 48, y);
+		y -= (font.getLineHeight() + 15);
+		font.draw(batch, "Shader Switches: " + profiler.getShaderSwitches(), 48, y);
+		y -= (font.getLineHeight() + 15);
+		font.draw(batch, "Texture Bindings: " + profiler.getTextureBindings(), 48, y);
+		y -= (font.getLineHeight() + 15);
+		font.draw(batch, "Vertices: " + profiler.getVertexCount().total, 48, y);
+		y -= (font.getLineHeight() + 15);
+
 		for (Iterator<AbstractView> it = views.getViews().descendingIterator(); it.hasNext(); )
 		{
 			AbstractView view = it.next();
-			font.draw(batch, "View: " + view.getClass().getSimpleName(), 48, h);
-			h -= 60;
+			font.draw(batch, "View: " + view.getClass().getSimpleName(), 48, y);
+			y -= (font.getLineHeight() + 15);
 		}
 
 		profiler.reset();
