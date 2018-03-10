@@ -29,7 +29,7 @@ android {
     }
 
     signingConfigs {
-        release {
+        build {
             keyAlias "protector"
             keyPassword "#RollPi2018"
             storeFile file("protector-release-key.jks")
@@ -38,10 +38,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.build
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.build
         }
     }
 }

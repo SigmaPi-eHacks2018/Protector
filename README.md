@@ -1,4 +1,4 @@
-# Protector [![Travis](https://travis-ci.org/SigmaPi-eHacks2018/Protector.svg?branch=master)](https://travis-ci.org/SigmaPi-eHacks2018/Protector)
+# Protector [![Travis](https://travis-ci.org/SigmaPi-eHacks2018/Protector.svg?branch=master)](https://travis-ci.org/SigmaPi-eHacks2018/Protector) [![Bitrise](https://www.bitrise.io/app/f9f8716fac83d8cb/status.svg?token=xQfP7feEAbM8V3pH0j9hCA)](https://www.bitrise.io/app/f9f8716fac83d8cb)
 
 Protector is a 2d android game, thats not very fun yet
 
