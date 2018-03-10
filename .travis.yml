@@ -1,25 +1,21 @@
-language: generic
+language: android
 sudo: false
 
-matrix:
-  include:
-    - os: linux
-      language: android
-      jdk: oraclejdk8
-      addons:
-        apt:
-          packages:
-            - oracle-java8-installer
-      android:
-        components:
-          - platform-tools
-          - tools
-          - build-tools-27.0.1
-          - android-27
-    - os: osx
-      osx_image: xcode9.2
-      language: java
+jdk: oraclejdk8
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
 
-before_install: ./travis/before_install.sh
-install: ./travis/install.sh
-script: ./travis/script.sh
+android:
+  components:
+    - platform-tools
+    - tools
+    - build-tools-27.0.1
+    - android-27
+
+before_install:
+  - yes | sdkmanager "platforms;android-27"
+
+script:
+  - ./gradlew check
