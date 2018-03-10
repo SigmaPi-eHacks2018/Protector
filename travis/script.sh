@@ -3,5 +3,5 @@
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
 	./gradlew ios:build
 else
-	./gradle android:build
+	./gradlew android:build
 fi
