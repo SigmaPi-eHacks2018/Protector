@@ -51,6 +51,10 @@ project(":ios") {
     apply plugin: "java"
     apply plugin: "robovm"
 
+    robovm {
+        iosSkipSigning = true
+        skipLaunch = true
+    }
 
     dependencies {
         compile project(":core")
