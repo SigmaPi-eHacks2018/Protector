@@ -134,7 +134,8 @@ public class VesselView extends AbstractView
 					if ((sx >= xVessels[i]  && sx <= (xVessels[i] + height))
 							&& (sy >= yVessels[i] && sy <= (yVessels[i] + height)))
 					{
-						if (protector.getProfile().getVessels().get(skin.getClass().getSimpleName() + "." + skin.name()))
+						String id = skin.getClass().getSimpleName() + "." + skin.name();
+						if (protector.getProfile().getVessels().get(id))
 						{
 							protector.getProfile().setVessel(i);
 						}

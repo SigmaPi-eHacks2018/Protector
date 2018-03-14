@@ -134,7 +134,8 @@ public class LaserView extends AbstractView
 					if ((sx >= xLasers[i]  && sx <= (xLasers[i] + height))
 							&& (sy >= yLasers[i] && sy <= (yLasers[i] + height)))
 					{
-						if (protector.getProfile().getLasers().get(skin.getClass().getSimpleName() + "." + skin.name()))
+						String id = skin.getClass().getSimpleName() + "." + skin.name();
+						if (protector.getProfile().getLasers().get(id))
 						{
 							protector.getProfile().setLaser(i);
 						}

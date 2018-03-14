@@ -74,6 +74,7 @@ project(":core") {
     apply plugin: "java"
     apply plugin: 'checkstyle'
     apply plugin: 'findbugs'
+    apply plugin: 'pmd'
 
     checkstyle {
         toolVersion '8.8'
@@ -85,6 +86,10 @@ project(":core") {
         effort = 'max'
     }
 
+    pmd {
+        toolVersion '6.1.0'
+    }
+
     tasks.withType(Checkstyle) {
         reports {
             xml.enabled = false
@@ -93,6 +98,13 @@ project(":core") {
     }
 
     tasks.withType(FindBugs) {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+
+    tasks.withType(Pmd) {
         reports {
             xml.enabled = false
             html.enabled = true

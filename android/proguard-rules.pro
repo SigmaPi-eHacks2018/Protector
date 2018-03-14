@@ -34,4 +34,3 @@
 }
 
 -keep class org.sigmapi.protector.android.AndroidLauncher
--keep class org.sigmapi.protector.ios.IOSLauncher
