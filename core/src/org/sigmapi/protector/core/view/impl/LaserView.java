@@ -28,8 +28,10 @@ package org.sigmapi.protector.core.view.impl;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Pools;
 
 import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.Statics;
@@ -58,6 +60,7 @@ public class LaserView extends AbstractView
 
 	private final BitmapFont font;
 	private final BitmapFont score;
+	private final GlyphLayout glyph;
 
 	private float width;
 	private float height;
@@ -80,6 +83,7 @@ public class LaserView extends AbstractView
 		logo = protector.getAssets().get(Statics.LOGO, Texture.class);
 		score = protector.getAssets().get(Font.ABOUT.getPath(), BitmapFont.class);
 		font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
+		glyph = Pools.obtain(GlyphLayout.class);
 
 		lasers = new TextureRegion[5];
 		xLasers = new float[5];
@@ -196,13 +200,16 @@ public class LaserView extends AbstractView
 			{
 				int points = (int) Math.pow(2, 10 + i);
 				batch.draw(buy, xLasers[i] + width, yLasers[i], width / 2.0f, height);
-				score.draw(batch, String.valueOf(points), xLasers[i] + (width / 2.0f), yLasers[i] + (height * 0.6f));
+
+				glyph.setText(score, Statics.format(points));
+				score.draw(batch, glyph, xLasers[i] + (width / 2.0f), yLasers[i] + (height * 0.6f));
 			}
 		}
 
 		batch.draw(home, xHome, yHome, width, height);
 
-		font.draw(batch, String.valueOf(protector.getProfile().getPoints()), Statics.WIDTH / 2.0f, Statics.HEIGHT * 0.70f);
+		glyph.setText(font, Statics.format(protector.getProfile().getPoints()));
+		font.draw(batch, glyph, (Statics.WIDTH / 2.0f) - (glyph.width / 2), Statics.HEIGHT * 0.70f);
 	}
 
 	@Override

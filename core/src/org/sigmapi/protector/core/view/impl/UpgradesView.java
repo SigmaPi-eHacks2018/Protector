@@ -28,7 +28,9 @@ package org.sigmapi.protector.core.view.impl;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Pools;
 
 import org.sigmapi.protector.core.Protector;
 import org.sigmapi.protector.core.Statics;
@@ -55,6 +57,7 @@ public class UpgradesView extends AbstractView
 
 	private final BitmapFont font;
 	private final BitmapFont score;
+	private final GlyphLayout glyph;
 
 	private float width;
 	private float height;
@@ -80,6 +83,7 @@ public class UpgradesView extends AbstractView
 		logo = protector.getAssets().get(Statics.LOGO, Texture.class);
 		score = protector.getAssets().get(Font.ABOUT.getPath(), BitmapFont.class);
 		font = protector.getAssets().get(Font.GAME.getPath(), BitmapFont.class);
+		glyph = Pools.obtain(GlyphLayout.class);
 
 		buy = protector.getAssets().get(Button.BUY.getPath(), Texture.class);
 		home = protector.getAssets().get(Button.HOME.getPath(), Texture.class);
@@ -182,7 +186,9 @@ public class UpgradesView extends AbstractView
 			long points = (long) Math.pow(2, level - 5);
 			batch.draw(buy, xPower + width, yPower, width / 2.0f, height);
 			score.draw(batch, "Power: " + String.valueOf(level), xPower, yPower + (height * 0.6f));
-			score.draw(batch, String.valueOf(points), xPower + (width / 2.0f), yPower + (height * 0.6f));
+
+			glyph.setText(score, Statics.format(points));
+			score.draw(batch, glyph, xPower + (width / 2.0f), yPower + (height * 0.6f));
 		}
 
 		level = protector.getProfile().getSpeed() + 1;
@@ -191,12 +197,15 @@ public class UpgradesView extends AbstractView
 			long points = (long) Math.pow(2, level - 5);
 			batch.draw(buy, xSpeed + width, ySpeed, width / 2.0f, height);
 			score.draw(batch, "Speed: " + String.valueOf(level), xSpeed, ySpeed + (height * 0.6f));
-			score.draw(batch, String.valueOf(points), xSpeed + (width / 2.0f), ySpeed + (height * 0.6f));
+
+			glyph.setText(score, Statics.format(points));
+			score.draw(batch, glyph, xSpeed + (width / 2.0f), ySpeed + (height * 0.6f));
 		}
 
 		batch.draw(home, xHome, yHome, width, height);
 
-		font.draw(batch, String.valueOf(protector.getProfile().getPoints()), Statics.WIDTH / 2.0f, Statics.HEIGHT * 0.70f);
+		glyph.setText(font, Statics.format(protector.getProfile().getPoints()));
+		font.draw(batch, glyph, (Statics.WIDTH / 2.0f) - (glyph.width / 2), Statics.HEIGHT * 0.70f);
 	}
 
 	@Override
