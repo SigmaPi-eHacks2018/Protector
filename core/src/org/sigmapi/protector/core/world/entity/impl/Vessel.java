@@ -202,7 +202,7 @@ public class Vessel extends AbstractEntity
 				else
 				{
 					shieldAnim--;
-					if (shieldAnim == -1)
+					if (shieldAnim == 0)
 					{
 						shieldAnim++;
 						shieldIn = true;

@@ -44,7 +44,9 @@ public enum Button
 	LASERS("4.png"),
 	UPGRADES("5.png"),
 	BUY("6.png"),
-	HOME("7.png");
+	HOME("7.png"),
+	BACK("8.png"),
+	EXIT("9.png");
 
 	@Getter
 	private final String path;

@@ -26,6 +26,7 @@
 
 package org.sigmapi.protector.core.view.impl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -55,6 +56,7 @@ public class MenuView extends AbstractView
 	private final Texture play;
 	private final Texture hanger;
 	private final Texture about;
+	private final Texture exit;
 
 	private final BitmapFont font;
 	private final GlyphLayout glyph;
@@ -70,6 +72,9 @@ public class MenuView extends AbstractView
 
 	private float xAbout;
 	private float yAbout;
+
+	private float xExit;
+	private float yExit;
 
 	private float y0;
 	private float y1;
@@ -88,6 +93,7 @@ public class MenuView extends AbstractView
 		play = protector.getAssets().get(Button.PLAY.getPath(), Texture.class);
 		hanger = protector.getAssets().get(Button.HANGER.getPath(), Texture.class);
 		about = protector.getAssets().get(Button.ABOUT.getPath(), Texture.class);
+		exit = protector.getAssets().get(Button.EXIT.getPath(), Texture.class);
 
 		height = Statics.HEIGHT * 0.1f;
 		width =  Statics.WIDTH * 0.5f;
@@ -96,6 +102,7 @@ public class MenuView extends AbstractView
 		xPlay = x;
 		xHanger = x;
 		xAbout = x;
+		xExit = x;
 
 		float y = (Statics.HEIGHT / 2.0f);
 		yPlay = y;
@@ -103,6 +110,8 @@ public class MenuView extends AbstractView
 		yHanger = y;
 		y -= (1.5f * height);
 		yAbout = y;
+		y -= (1.5f * height);
+		yExit = y;
 
 		y0 = 0;
 		y1 = Statics.HEIGHT;
@@ -139,6 +148,12 @@ public class MenuView extends AbstractView
 					protector.getViews().pop();
 					protector.getViews().push(new AboutView(protector));
 				}
+
+				else if ((sx >= xExit && sx <= (xExit + width))
+						&& (sy >= yExit && sy <= (yExit + height)))
+				{
+					Gdx.app.exit();
+				}
 			}
 		}
 	}
@@ -170,6 +185,7 @@ public class MenuView extends AbstractView
 		batch.draw(play, xPlay, yPlay, width, height);
 		batch.draw(hanger, xHanger, yHanger, width, height);
 		batch.draw(about, xAbout, yAbout, width, height);
+		batch.draw(exit, xExit, yExit, width, height);
 
 		glyph.setText(font, Statics.format(protector.getProfile().getPoints()));
 		font.draw(batch, glyph, (Statics.WIDTH / 2.0f) - (glyph.width / 2), Statics.HEIGHT * 0.70f);

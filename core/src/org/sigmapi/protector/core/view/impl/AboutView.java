@@ -78,8 +78,8 @@ public class AboutView extends AbstractView
 
 		home = protector.getAssets().get(Button.HOME.getPath(), Texture.class);
 
-		width = Statics.WIDTH / 2.0f;
-		height = (home.getWidth() / width) * home.getHeight();
+		height = Statics.HEIGHT * 0.08f;
+		width =  Statics.WIDTH * 0.5f;
 
 		float x = (Statics.WIDTH / 2.0f) - (width / 2.0f);
 		xHome = x;

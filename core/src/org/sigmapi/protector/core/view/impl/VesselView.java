@@ -56,7 +56,7 @@ public class VesselView extends AbstractView
 
 	private final TextureRegion[] vessels;
 	private final Texture buy;
-	private final Texture home;
+	private final Texture back;
 
 	private final BitmapFont font;
 	private final BitmapFont score;
@@ -94,7 +94,7 @@ public class VesselView extends AbstractView
 			vessels[skin.ordinal()] = new TextureRegion(t, 0, 0, 45, 45);
 		}
 		buy = protector.getAssets().get(Button.BUY.getPath(), Texture.class);
-		home = protector.getAssets().get(Button.HOME.getPath(), Texture.class);
+		back = protector.getAssets().get(Button.BACK.getPath(), Texture.class);
 
 		height = Statics.HEIGHT * 0.08f;
 		width =  Statics.WIDTH * 0.5f;
@@ -162,7 +162,7 @@ public class VesselView extends AbstractView
 						&& (sy >= yHome && sy <= (yHome + height)))
 				{
 					protector.getViews().pop();
-					protector.getViews().push(new MenuView(protector));
+					protector.getViews().push(new HangerView(protector));
 				}
 			}
 		}
@@ -206,7 +206,7 @@ public class VesselView extends AbstractView
 			}
 		}
 
-		batch.draw(home, xHome, yHome, width, height);
+		batch.draw(back, xHome, yHome, width, height);
 
 		glyph.setText(font, Statics.format(protector.getProfile().getPoints()));
 		font.draw(batch, glyph, (Statics.WIDTH / 2.0f) - (glyph.width / 2), Statics.HEIGHT * 0.70f);
