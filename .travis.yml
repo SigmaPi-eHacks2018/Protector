@@ -20,6 +20,10 @@ android:
     - build-tools-27.0.3
     - android-27
 
+notifications:
+  email:
+    - false
+
 before_install:
   - yes | sdkmanager "platforms;android-27"
   - chmod +x gradlew
