@@ -14,6 +14,12 @@ buildscript {
     }
 }
 
+apply plugin: "net.researchgate.release"
+
+release {
+    buildTasks = []
+}
+
 allprojects {
     apply plugin: "idea"
 
@@ -51,18 +57,12 @@ project(":ios") {
     apply plugin: "java"
     apply plugin: "robovm"
 
-    robovm {
-        iosSkipSigning = true
-        skipLaunch = true
-    }
-
     dependencies {
         compile project(":core")
         compile "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
         compile "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-        
     }
 }
 
@@ -71,41 +71,6 @@ project(":core") {
     apply plugin: "checkstyle"
     apply plugin: "findbugs"
     apply plugin: "pmd"
-
-    checkstyle {
-        toolVersion = project.findProperty("checkstyleVersion")
-        configProperties["config_loc"] = new File(project.projectDir, "/config/checkstyle/")
-    }
-
-    findbugs {
-        toolVersion = project.findProperty("findbugsVersion")
-        effort = "max"
-    }
-
-    pmd {
-        toolVersion = project.findProperty("pmdVersion")
-    }
-
-    tasks.withType(Checkstyle) {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
-    }
-
-    tasks.withType(FindBugs) {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
-    }
-
-    tasks.withType(Pmd) {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
-    }
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"

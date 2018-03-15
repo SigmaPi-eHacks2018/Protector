@@ -1,8 +1,40 @@
-apply plugin: "java"
-
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
+checkstyle {
+    toolVersion = project.findProperty("checkstyleVersion")
+    configProperties["config_loc"] = new File(project.projectDir, "/config/checkstyle/")
+}
+
+findbugs {
+    toolVersion = project.findProperty("findbugsVersion")
+    effort = "max"
+}
+
+pmd {
+    toolVersion = project.findProperty("pmdVersion")
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+tasks.withType(Pmd) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
